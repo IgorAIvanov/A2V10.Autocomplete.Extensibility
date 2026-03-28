@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="A2v10.ViewEngine.Xaml" Version="10.1.8630" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\A2V10.Xaml.Core\A2V10.Xaml.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

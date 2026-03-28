@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/A2V10.Xaml.Core/A2V10.Xaml.Core.csproj" />
+    <Project Path="src/A2V10.Xaml.LanguageServer/A2V10.Xaml.LanguageServer.csproj" />
+    <Project Path="src/A2V10.Xaml.Reflection/A2V10.Xaml.Reflection.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/A2V10.Xaml.Tests/A2V10.Xaml.Tests.csproj" />
+  </Folder>
+</Solution>

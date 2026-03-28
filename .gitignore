@@ -1,0 +1,31 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+out/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+
+## Rider / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+## Generated files
+*.cache
+*.pdb
