@@ -32,11 +32,6 @@ public sealed class CompletionRequestHandler
             text = await File.ReadAllTextAsync(request.FilePath, cancellationToken);
         }
 
-        if (!XamlAssemblyReferenceDetector.ContainsAssemblyReference(text, "A2v10.Xaml"))
-        {
-            return new CompletionResponse([]);
-        }
-
         var document = new XamlDocumentContext(new Uri(request.FilePath), text, request.ProjectPath);
         var context = _contextParser.Parse(text, request.Position);
         var metadata = await _metadataProvider.GetMetadataAsync(document, cancellationToken);
