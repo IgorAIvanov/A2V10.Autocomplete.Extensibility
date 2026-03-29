@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\A2V10.Xaml.Core\A2V10.Xaml.Core.csproj" />
     <ProjectReference Include="..\..\src\A2V10.Xaml.Reflection\A2V10.Xaml.Reflection.csproj" />
+    <ProjectReference Include="..\..\src\A2V10.Xaml.LanguageServer\A2V10.Xaml.LanguageServer.csproj" />
   </ItemGroup>
 
 </Project>

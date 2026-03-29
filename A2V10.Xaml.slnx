@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/A1V10.Xaml.Autocomlete/A1V10.Xaml.Autocomlete.csproj" Id="1ed4fa74-398b-404e-9440-c258e43a08e5" />
     <Project Path="src/A2V10.Xaml.Core/A2V10.Xaml.Core.csproj" />
     <Project Path="src/A2V10.Xaml.LanguageServer/A2V10.Xaml.LanguageServer.csproj" />
     <Project Path="src/A2V10.Xaml.Reflection/A2V10.Xaml.Reflection.csproj" />

@@ -21,7 +21,22 @@ public sealed class CompletionRequestHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var text = await File.ReadAllTextAsync(request.FilePath, cancellationToken);
+        var text = request.Text;
+        if (text is null)
+        {
+            if (!File.Exists(request.FilePath))
+            {
+                return new CompletionResponse([]);
+            }
+
+            text = await File.ReadAllTextAsync(request.FilePath, cancellationToken);
+        }
+
+        if (!XamlAssemblyReferenceDetector.ContainsAssemblyReference(text, "A2v10.Xaml"))
+        {
+            return new CompletionResponse([]);
+        }
+
         var document = new XamlDocumentContext(new Uri(request.FilePath), text, request.ProjectPath);
         var context = _contextParser.Parse(text, request.Position);
         var metadata = await _metadataProvider.GetMetadataAsync(document, cancellationToken);

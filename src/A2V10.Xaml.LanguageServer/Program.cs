@@ -2,6 +2,7 @@
 using A2V10.Xaml.LanguageServer.Protocol;
 
 var composition = LanguageServerComposition.CreateDefault();
+var host = new LspServerHost(composition.CompletionHandler, new TextDocumentStore());
 
 if (args.Length >= 2 && string.Equals(args[0], "--complete", StringComparison.OrdinalIgnoreCase))
 {
@@ -20,5 +21,12 @@ if (args.Length >= 2 && string.Equals(args[0], "--complete", StringComparison.Or
     return;
 }
 
+if (args.Length >= 1 && string.Equals(args[0], "--stdio", StringComparison.OrdinalIgnoreCase))
+{
+    await host.RunAsync(Console.OpenStandardInput(), Console.OpenStandardOutput());
+    return;
+}
+
 Console.WriteLine("A2V10 XAML language server skeleton is ready.");
 Console.WriteLine("Use '--complete <filePath> [position] [projectPath]' for a local completion smoke test.");
+Console.WriteLine("Use '--stdio' to run the minimal LSP server.");
