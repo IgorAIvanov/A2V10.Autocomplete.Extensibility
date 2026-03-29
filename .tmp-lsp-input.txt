@@ -1,0 +1,7 @@
+Content-Length: 107
+
+-Length: 58
+
+-Length: 47
+
+{"jsonrpc":"2.0","method":"exit","params":null}

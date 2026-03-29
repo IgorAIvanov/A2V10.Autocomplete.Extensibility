@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -12,14 +12,25 @@
     <PackageReference Include="Nerdbank.Streams" Version="2.13.16" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include=".vsextension\" />
-  </ItemGroup>
-
-  <Target Name="CopyLanguageServerArtifacts" AfterTargets="Build">
+  <Target Name="BuildLanguageServerArtifacts">
     <MSBuild Projects="..\A2V10.Xaml.LanguageServer\A2V10.Xaml.LanguageServer.csproj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+
+  <Target Name="IncludeLanguageServerArtifactsInVsix" BeforeTargets="GetVsixSourceItems" DependsOnTargets="BuildLanguageServerArtifacts">
     <ItemGroup>
-      <LanguageServerArtifacts Include="..\A2V10.Xaml.LanguageServer\bin\$(Configuration)\net10.0\**\*" />
+      <LanguageServerArtifacts Include="..\A2V10.Xaml.LanguageServer\bin\$(Configuration)\net8.0\**\*" />
+
+      <Content Include="@(LanguageServerArtifacts)">
+        <Link>LanguageServer\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <IncludeInVSIX>true</IncludeInVSIX>
+        <Visible>false</Visible>
+      </Content>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopyLanguageServerArtifacts" AfterTargets="Build" DependsOnTargets="BuildLanguageServerArtifacts">
+    <ItemGroup>
+      <LanguageServerArtifacts Include="..\A2V10.Xaml.LanguageServer\bin\$(Configuration)\net8.0\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(LanguageServerArtifacts)" DestinationFiles="@(LanguageServerArtifacts->'$(OutDir)LanguageServer\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>

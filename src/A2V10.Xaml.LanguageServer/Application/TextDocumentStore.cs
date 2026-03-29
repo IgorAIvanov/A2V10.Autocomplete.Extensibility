@@ -3,7 +3,7 @@ namespace A2V10.Xaml.LanguageServer.Application;
 public sealed class TextDocumentStore
 {
     private readonly Dictionary<string, TextDocumentState> _documents = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Lock _lock = new();
+    private readonly object _lock = new();
 
     public void Open(string documentUri, string text, string? projectPath)
     {
