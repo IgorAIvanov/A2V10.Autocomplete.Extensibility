@@ -32,6 +32,33 @@ public sealed class CompletionServiceTests
     }
 
     [Fact]
+    public void GetSuggestions_ReturnsDialogRootSnippet()
+    {
+        var metadata = CreateMetadata();
+
+        var suggestion = Assert.Single(_service.GetSuggestions(
+            new XamlCompletionContext(XamlCompletionKind.TagName, "Dia", null, null, 0),
+            metadata));
+
+        Assert.Equal("Dialog", suggestion.Label);
+        Assert.Equal("Dialog xmlns=\"clr-namespace:A2v10.Xaml;assembly=A2v10.Xaml\"$0></Dialog>", suggestion.InsertText);
+        Assert.True(suggestion.IsSnippet);
+    }
+
+    [Fact]
+    public void GetSuggestions_ReturnsPlainDialogName_ForClosingTag()
+    {
+        var metadata = CreateMetadata();
+
+        var suggestion = Assert.Single(_service.GetSuggestions(
+            new XamlCompletionContext(XamlCompletionKind.TagName, "Dia", null, null, 0, true),
+            metadata));
+
+        Assert.Equal("Dialog", suggestion.InsertText);
+        Assert.False(suggestion.IsSnippet);
+    }
+
+    [Fact]
     public void GetSuggestions_ReturnsAttributeValues()
     {
         var metadata = CreateMetadata();
@@ -54,6 +81,7 @@ public sealed class CompletionServiceTests
                     new AttributeDescriptor("Id"),
                     new AttributeDescriptor("Visibility", allowedValues: ["Visible", "Collapsed"])
                 ]),
+            new TagDescriptor("Dialog", "Dialog root"),
             new TagDescriptor("Group", "Reusable group")
         ]);
     }

@@ -36,7 +36,7 @@ public sealed class XamlContextParser : IXamlContextParser
 
         if (fragment[0] == '/')
         {
-            return new XamlCompletionContext(XamlCompletionKind.TagName, fragment[1..].Trim(), null, null, position);
+            return new XamlCompletionContext(XamlCompletionKind.TagName, fragment[1..].Trim(), null, null, position, true);
         }
 
         return ParseOpenTag(fragment, position);

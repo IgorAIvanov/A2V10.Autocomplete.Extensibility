@@ -5,6 +5,9 @@ namespace A2V10.Xaml.Core.Services;
 
 public sealed class CompletionService : ICompletionService
 {
+    private const string DialogRootTagName = "Dialog";
+    private const string DialogRootInsertText = "Dialog xmlns=\"clr-namespace:A2v10.Xaml;assembly=A2v10.Xaml\"$0></Dialog>";
+
     public IReadOnlyCollection<CompletionSuggestion> GetSuggestions(XamlCompletionContext context, MetadataRegistry metadata)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -24,8 +27,18 @@ public sealed class CompletionService : ICompletionService
         return metadata.Tags
             .Where(tag => StartsWith(tag.Name, context.Prefix))
             .OrderBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
-            .Select(tag => new CompletionSuggestion(tag.Name, tag.Name, tag.Description, XamlCompletionKind.TagName))
+            .Select(tag => CreateTagSuggestion(context, tag))
             .ToArray();
+    }
+
+    private static CompletionSuggestion CreateTagSuggestion(XamlCompletionContext context, TagDescriptor tag)
+    {
+        if (!context.IsClosingTag && string.Equals(tag.Name, DialogRootTagName, StringComparison.OrdinalIgnoreCase))
+        {
+            return new CompletionSuggestion(tag.Name, DialogRootInsertText, tag.Description, XamlCompletionKind.TagName, true);
+        }
+
+        return new CompletionSuggestion(tag.Name, tag.Name, tag.Description, XamlCompletionKind.TagName);
     }
 
     private static IReadOnlyCollection<CompletionSuggestion> GetAttributeSuggestions(XamlCompletionContext context, MetadataRegistry metadata)

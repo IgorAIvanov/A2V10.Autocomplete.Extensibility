@@ -26,6 +26,7 @@ public sealed class CompletionRequestHandlerTests
         var response = await handler.HandleAsync(new CompletionRequest("C:\\Temp\\View.xaml", 3, "C:\\Temp\\Project.csproj", "<Gr"));
 
         Assert.Equal(suggestions, response.Items);
+        Assert.Equal(2, response.ReplaceLength);
         Assert.Equal("<Gr", metadataProvider.LastDocument?.Text);
     }
 

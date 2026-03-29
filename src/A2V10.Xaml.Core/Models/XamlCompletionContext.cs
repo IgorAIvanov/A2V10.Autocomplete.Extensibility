@@ -5,4 +5,5 @@ public sealed record XamlCompletionContext(
     string Prefix,
     string? TagName,
     string? AttributeName,
-    int Position);
+    int Position,
+    bool IsClosingTag = false);

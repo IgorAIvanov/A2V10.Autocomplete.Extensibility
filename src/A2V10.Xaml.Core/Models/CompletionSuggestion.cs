@@ -4,4 +4,5 @@ public sealed record CompletionSuggestion(
     string Label,
     string InsertText,
     string? Detail,
-    XamlCompletionKind Kind);
+    XamlCompletionKind Kind,
+    bool IsSnippet = false);

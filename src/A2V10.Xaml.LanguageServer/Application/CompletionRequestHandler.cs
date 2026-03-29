@@ -37,6 +37,6 @@ public sealed class CompletionRequestHandler
         var metadata = await _metadataProvider.GetMetadataAsync(document, cancellationToken);
         var suggestions = _completionService.GetSuggestions(context, metadata);
 
-        return new CompletionResponse(suggestions);
+        return new CompletionResponse(suggestions, context.Prefix.Length);
     }
 }

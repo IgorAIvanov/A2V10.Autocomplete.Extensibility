@@ -127,10 +127,13 @@ public sealed class LspServerHost
     private async Task HandleCompletionAsync(JsonElement root, JsonElement idProperty, Stream output, CancellationToken cancellationToken)
     {
         var parameters = root.GetProperty("params");
+        var position = parameters.GetProperty("position");
+        var line = position.GetProperty("line").GetInt32();
+        var character = position.GetProperty("character").GetInt32();
         var uri = parameters.GetProperty("textDocument").GetProperty("uri").GetString();
         if (string.IsNullOrWhiteSpace(uri))
         {
-            await WriteCompletionResponseAsync(output, idProperty, [], cancellationToken);
+            await WriteCompletionResponseAsync(output, idProperty, new CompletionResponse(Array.Empty<CompletionSuggestion>()), line, character, cancellationToken);
             return;
         }
 
@@ -138,18 +141,15 @@ public sealed class LspServerHost
         var text = GetDocumentText(uri, filePath);
         if (text is null)
         {
-            await WriteCompletionResponseAsync(output, idProperty, [], cancellationToken);
+            await WriteCompletionResponseAsync(output, idProperty, new CompletionResponse(Array.Empty<CompletionSuggestion>()), line, character, cancellationToken);
             return;
         }
 
-        var position = parameters.GetProperty("position");
-        var line = position.GetProperty("line").GetInt32();
-        var character = position.GetProperty("character").GetInt32();
         var projectPath = GetProjectPath(uri, filePath);
         var offset = LspTextPositionConverter.ToOffset(text, line, character);
         var response = await _completionHandler.HandleAsync(new CompletionRequest(filePath, offset, projectPath, text), cancellationToken);
 
-        await WriteCompletionResponseAsync(output, idProperty, response.Items, cancellationToken);
+        await WriteCompletionResponseAsync(output, idProperty, response, line, character, cancellationToken);
     }
 
     private string? GetDocumentText(string documentUri, string filePath)
@@ -295,10 +295,14 @@ public sealed class LspServerHost
     private static Task WriteCompletionResponseAsync(
         Stream output,
         JsonElement idProperty,
-        IReadOnlyCollection<CompletionSuggestion> items,
+        CompletionResponse response,
+        int line,
+        int character,
         CancellationToken cancellationToken)
         => WriteMessageAsync(output, writer =>
         {
+            var replaceStartCharacter = Math.Max(0, character - response.ReplaceLength);
+
             writer.WriteStartObject();
             writer.WriteString("jsonrpc", "2.0");
             writer.WritePropertyName("id");
@@ -308,16 +312,39 @@ public sealed class LspServerHost
             writer.WriteBoolean("isIncomplete", false);
             writer.WritePropertyName("items");
             writer.WriteStartArray();
-            foreach (var item in items)
+            foreach (var item in response.Items)
             {
                 writer.WriteStartObject();
                 writer.WriteString("label", item.Label);
                 writer.WriteString("insertText", item.InsertText);
+                writer.WriteString("filterText", item.Label);
+                writer.WriteString("sortText", item.Label);
+                writer.WritePropertyName("textEdit");
+                writer.WriteStartObject();
+                writer.WritePropertyName("range");
+                writer.WriteStartObject();
+                writer.WritePropertyName("start");
+                writer.WriteStartObject();
+                writer.WriteNumber("line", line);
+                writer.WriteNumber("character", replaceStartCharacter);
+                writer.WriteEndObject();
+                writer.WritePropertyName("end");
+                writer.WriteStartObject();
+                writer.WriteNumber("line", line);
+                writer.WriteNumber("character", character);
+                writer.WriteEndObject();
+                writer.WriteEndObject();
+                writer.WriteString("newText", item.InsertText);
+                writer.WriteEndObject();
+                if (item.IsSnippet)
+                {
+                    writer.WriteNumber("insertTextFormat", 2);
+                }
                 if (!string.IsNullOrWhiteSpace(item.Detail))
                 {
                     writer.WriteString("detail", item.Detail);
                 }
-                writer.WriteNumber("kind", MapCompletionKind(item.Kind));
+                writer.WriteNumber("kind", MapCompletionKind(item));
                 writer.WriteEndObject();
             }
             writer.WriteEndArray();
@@ -366,8 +393,10 @@ public sealed class LspServerHost
         await output.FlushAsync(cancellationToken);
     }
 
-    private static int MapCompletionKind(XamlCompletionKind kind)
-        => kind switch
+    private static int MapCompletionKind(CompletionSuggestion item)
+        => item.IsSnippet
+            ? 15
+            : item.Kind switch
         {
             XamlCompletionKind.TagName => 7,
             XamlCompletionKind.AttributeName => 10,
