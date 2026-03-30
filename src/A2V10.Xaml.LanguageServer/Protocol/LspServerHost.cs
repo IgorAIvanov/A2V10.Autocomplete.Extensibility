@@ -38,8 +38,6 @@ public sealed class LspServerHost
             var method = methodProperty.GetString();
             var hasId = root.TryGetProperty("id", out var idProperty);
 
-            DiagnosticLog.Info($"Received LSP method '{method ?? "<null>"}'. HasId={hasId}.");
-
             switch (method)
             {
                 case "initialize":
@@ -95,7 +93,6 @@ public sealed class LspServerHost
 
         var projectPath = ProjectPathResolver.FindProjectPath(GetFilePath(uri));
         _documentStore.Open(uri, text, projectPath);
-        DiagnosticLog.Info($"Opened document '{uri}'. Project='{projectPath ?? "<none>"}', Length={text.Length}.");
     }
 
     private void HandleDidChange(JsonElement root)
@@ -115,7 +112,6 @@ public sealed class LspServerHost
 
         var text = changes[changes.GetArrayLength() - 1].GetProperty("text").GetString() ?? string.Empty;
         _documentStore.Update(uri, text);
-        DiagnosticLog.Info($"Updated document '{uri}'. Length={text.Length}.");
     }
 
     private void HandleDidClose(JsonElement root)
@@ -127,7 +123,6 @@ public sealed class LspServerHost
         }
 
         _documentStore.Close(uri);
-        DiagnosticLog.Info($"Closed document '{uri}'.");
     }
 
     private async Task HandleCompletionAsync(JsonElement root, JsonElement idProperty, Stream output, CancellationToken cancellationToken)
@@ -153,10 +148,7 @@ public sealed class LspServerHost
 
         var projectPath = GetProjectPath(uri, filePath);
         var offset = LspTextPositionConverter.ToOffset(text, line, character);
-        DiagnosticLog.Info($"Handling completion for '{filePath}'. Uri='{uri}', Project='{projectPath ?? "<none>"}', Position={line}:{character}, Offset={offset}, TextLength={text.Length}.");
         var response = await _completionHandler.HandleAsync(new CompletionRequest(filePath, offset, projectPath, text), cancellationToken);
-
-        DiagnosticLog.Info($"Sending completion response for '{filePath}'. Items={response.Items.Count}, ReplaceLength={response.ReplaceLength}.");
         await WriteCompletionResponseAsync(output, idProperty, response, line, character, cancellationToken);
     }
 

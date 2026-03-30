@@ -57,10 +57,7 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
         {
             if (!string.IsNullOrWhiteSpace(args.Data))
             {
-                var eventType = args.Data.Contains("[ERROR]", StringComparison.OrdinalIgnoreCase)
-                    ? TraceEventType.Error
-                    : TraceEventType.Information;
-                _traceSource.TraceEvent(eventType, 0, $"Language server stderr: {args.Data}");
+                _traceSource.TraceEvent(TraceEventType.Error, 0, $"Language server stderr: {args.Data}");
             }
         };
         process.Exited += (_, _) => _traceSource.TraceEvent(TraceEventType.Information, 0, $"Language server exited with code {process.ExitCode}.");
@@ -117,7 +114,6 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
         startInfo.RedirectStandardInput = true;
         startInfo.RedirectStandardOutput = true;
         startInfo.RedirectStandardError = true;
-        startInfo.Environment["A2V10_XAML_TRACE"] = "1";
         return startInfo;
     }
 
