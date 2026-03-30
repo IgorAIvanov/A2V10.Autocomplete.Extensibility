@@ -2,6 +2,8 @@ using System.Buffers;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using A2V10.Xaml.Core.Abstractions;
+using A2V10.Xaml.Core.Documents;
 using A2V10.Xaml.Core.Models;
 using A2V10.Xaml.LanguageServer.Application;
 
@@ -9,12 +11,16 @@ namespace A2V10.Xaml.LanguageServer.Protocol;
 
 public sealed class LspServerHost
 {
+    private static readonly Uri OpenDocumentUri = new("file:///__open__.xaml");
+
     private readonly CompletionRequestHandler _completionHandler;
+    private readonly IMetadataProvider _metadataProvider;
     private readonly TextDocumentStore _documentStore;
 
-    public LspServerHost(CompletionRequestHandler completionHandler, TextDocumentStore documentStore)
+    public LspServerHost(CompletionRequestHandler completionHandler, IMetadataProvider metadataProvider, TextDocumentStore documentStore)
     {
         _completionHandler = completionHandler;
+        _metadataProvider = metadataProvider;
         _documentStore = documentStore;
     }
 
@@ -49,7 +55,7 @@ public sealed class LspServerHost
                 case "initialized":
                     break;
                 case "textDocument/didOpen":
-                    HandleDidOpen(root);
+                    await HandleDidOpenAsync(root, cancellationToken);
                     break;
                 case "textDocument/didChange":
                     HandleDidChange(root);
@@ -81,7 +87,7 @@ public sealed class LspServerHost
         }
     }
 
-    private void HandleDidOpen(JsonElement root)
+    private async Task HandleDidOpenAsync(JsonElement root, CancellationToken cancellationToken)
     {
         var textDocument = root.GetProperty("params").GetProperty("textDocument");
         var uri = textDocument.GetProperty("uri").GetString();
@@ -93,6 +99,23 @@ public sealed class LspServerHost
 
         var projectPath = ProjectPathResolver.FindProjectPath(GetFilePath(uri));
         _documentStore.Open(uri, text, projectPath);
+
+        if (string.IsNullOrWhiteSpace(projectPath))
+        {
+            return;
+        }
+
+        try
+        {
+            await _metadataProvider.GetMetadataAsync(new XamlDocumentContext(OpenDocumentUri, text, projectPath), cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
     private void HandleDidChange(JsonElement root)
@@ -183,7 +206,6 @@ public sealed class LspServerHost
 
         return documentUri;
     }
-
     private static async Task<string?> ReadMessageAsync(Stream input, CancellationToken cancellationToken)
     {
         int? contentLength = null;

@@ -6,7 +6,7 @@ try
     await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer] Starting. Args: {string.Join(' ', args)}");
 
     var composition = LanguageServerComposition.CreateDefault();
-    var host = new LspServerHost(composition.CompletionHandler, new TextDocumentStore());
+    var host = new LspServerHost(composition.CompletionHandler, composition.MetadataProvider, new TextDocumentStore());
 
     if (args.Length >= 2 && string.Equals(args[0], "--complete", StringComparison.OrdinalIgnoreCase))
     {

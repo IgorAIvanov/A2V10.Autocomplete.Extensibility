@@ -11,7 +11,7 @@ public static class ProjectPathResolver
 
         var currentDirectory = File.Exists(filePath)
             ? Path.GetDirectoryName(filePath)
-            : filePath;
+            : GetSearchDirectory(filePath);
 
         while (!string.IsNullOrWhiteSpace(currentDirectory))
         {
@@ -28,5 +28,18 @@ public static class ProjectPathResolver
         }
 
         return null;
+    }
+
+    private static string? GetSearchDirectory(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            return path;
+        }
+
+        var directoryName = Path.GetDirectoryName(path);
+        return string.IsNullOrWhiteSpace(directoryName)
+            ? path
+            : directoryName;
     }
 }

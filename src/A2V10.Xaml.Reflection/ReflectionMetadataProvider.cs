@@ -33,30 +33,82 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         }
 
         var cacheKey = CreateCacheKey(documentContext.ProjectPath, assemblyPaths);
-        if (_cache.TryGet(cacheKey, out var metadata))
+        if (_cache.TryGetValue(cacheKey, out var cachedMetadata))
         {
-            return metadata;
+            return cachedMetadata;
         }
 
+        return _cache.GetOrAdd(cacheKey, () => CreateMetadataRegistry(assemblyPaths, cancellationToken));
+    }
+
+    private static MetadataRegistry CreateMetadataRegistry(IReadOnlyCollection<string> assemblyPaths, CancellationToken cancellationToken)
+    {
+        using var metadataLoadContext = new MetadataLoadContext(
+            new PathAssemblyResolver(CreateResolverPaths(assemblyPaths)),
+            typeof(object).Assembly.GetName().Name);
+
         var tags = assemblyPaths
-            .SelectMany(path => LoadTags(path, cancellationToken))
+            .SelectMany(path => LoadTags(metadataLoadContext, path, cancellationToken))
             .GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .Select(group => group.First())
             .OrderBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        metadata = new MetadataRegistry(tags);
-        _cache.Set(cacheKey, metadata);
-        return metadata;
+        return new MetadataRegistry(tags);
     }
 
-    private static IEnumerable<TagDescriptor> LoadTags(string assemblyPath, CancellationToken cancellationToken)
+    private static IReadOnlyCollection<string> CreateResolverPaths(IReadOnlyCollection<string> assemblyPaths)
+    {
+        var resolverPaths = new HashSet<string>(assemblyPaths, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var assembliesDirectory in GetAssembliesDirectories(assemblyPaths))
+        {
+            foreach (var path in Directory.EnumerateFiles(assembliesDirectory, "*.dll", SearchOption.AllDirectories))
+            {
+                resolverPaths.Add(path);
+            }
+        }
+
+        if (AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is string trustedPlatformAssemblies)
+        {
+            foreach (var path in trustedPlatformAssemblies.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
+            {
+                resolverPaths.Add(path);
+            }
+        }
+
+        resolverPaths.Add(typeof(object).Assembly.Location);
+        resolverPaths.Add(typeof(Enumerable).Assembly.Location);
+
+        return resolverPaths.ToArray();
+    }
+
+    private static IReadOnlyCollection<string> GetAssembliesDirectories(IReadOnlyCollection<string> assemblyPaths)
+    {
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var assemblyPath in assemblyPaths)
+        {
+            for (var current = Path.GetDirectoryName(assemblyPath); !string.IsNullOrWhiteSpace(current); current = Path.GetDirectoryName(current))
+            {
+                if (string.Equals(Path.GetFileName(current), "@assemblies", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(current);
+                    break;
+                }
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    private static IEnumerable<TagDescriptor> LoadTags(MetadataLoadContext metadataLoadContext, string assemblyPath, CancellationToken cancellationToken)
     {
         Assembly? assembly = null;
 
         try
         {
-            assembly = Assembly.LoadFrom(assemblyPath);
+            assembly = metadataLoadContext.LoadFromAssemblyPath(assemblyPath);
         }
         catch
         {
@@ -147,21 +199,36 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
             return false;
         }
 
-        return !typeof(Delegate).IsAssignableFrom(property.PropertyType);
+        return !InheritsFrom(property.PropertyType, typeof(Delegate).FullName!);
     }
 
     private static AttributeDescriptor CreateAttribute(PropertyInfo property)
     {
-        var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        var propertyType = GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
 
-        var allowedValues = propertyType == typeof(bool)
+        var allowedValues = string.Equals(propertyType.FullName, typeof(bool).FullName, StringComparison.Ordinal)
             ? new[] { bool.TrueString.ToLowerInvariant(), bool.FalseString.ToLowerInvariant() }
             : propertyType.IsEnum
-                ? Enum.GetNames(propertyType)
+                ? GetEnumNames(propertyType)
                 : Array.Empty<string>();
 
         return new AttributeDescriptor(property.Name, property.PropertyType.FullName, allowedValues);
     }
+
+    private static Type? GetUnderlyingType(Type type)
+    {
+        if (!type.IsGenericType || !string.Equals(type.GetGenericTypeDefinition().FullName, typeof(Nullable<>).FullName, StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        return type.GetGenericArguments()[0];
+    }
+
+    private static string[] GetEnumNames(Type type)
+        => type.GetFields(BindingFlags.Public | BindingFlags.Static)
+            .Select(static field => field.Name)
+            .ToArray();
 
     private static bool InheritsFrom(Type type, string fullName)
     {
@@ -239,9 +306,7 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
 
     private static string CreateCacheKey(string? projectPath, IReadOnlyCollection<string> assemblyPaths)
     {
-        var projectPart = string.IsNullOrWhiteSpace(projectPath)
-            ? "no-project"
-            : projectPath;
+        var projectPart = NormalizeProjectPath(projectPath);
 
         var assemblyPart = string.Join('|', assemblyPaths.Order(StringComparer.OrdinalIgnoreCase).Select(path =>
         {
@@ -253,5 +318,20 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         }));
 
         return $"{projectPart}|{assemblyPart}";
+    }
+
+    private static string NormalizeProjectPath(string? projectPath)
+    {
+        if (string.IsNullOrWhiteSpace(projectPath))
+        {
+            return "no-project";
+        }
+
+        if (File.Exists(projectPath) || projectPath.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
+        {
+            return Path.GetDirectoryName(projectPath) ?? projectPath;
+        }
+
+        return projectPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
     }
 }

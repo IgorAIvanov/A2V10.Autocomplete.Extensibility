@@ -6,12 +6,15 @@ namespace A2V10.Xaml.LanguageServer.Application;
 
 public sealed class LanguageServerComposition
 {
-    public LanguageServerComposition(CompletionRequestHandler completionHandler)
+    public LanguageServerComposition(CompletionRequestHandler completionHandler, IMetadataProvider metadataProvider)
     {
         CompletionHandler = completionHandler;
+        MetadataProvider = metadataProvider;
     }
 
     public CompletionRequestHandler CompletionHandler { get; }
+
+    public IMetadataProvider MetadataProvider { get; }
 
     public static LanguageServerComposition CreateDefault()
     {
@@ -20,6 +23,6 @@ public sealed class LanguageServerComposition
         IMetadataProvider metadataProvider = new ReflectionMetadataProvider(assemblyResolver);
         ICompletionService completionService = new CompletionService();
 
-        return new LanguageServerComposition(new CompletionRequestHandler(contextParser, metadataProvider, completionService));
+        return new LanguageServerComposition(new CompletionRequestHandler(contextParser, metadataProvider, completionService), metadataProvider);
     }
 }

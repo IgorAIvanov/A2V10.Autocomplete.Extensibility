@@ -1,3 +1,4 @@
+using System.Reflection;
 using A2V10.Xaml.Core.Abstractions;
 using A2V10.Xaml.Core.Documents;
 using A2V10.Xaml.Reflection;
@@ -59,6 +60,72 @@ public sealed class ReflectionMetadataProviderTests
         var second = await provider.GetMetadataAsync(documentContext);
 
         Assert.Same(first, second);
+    }
+
+    [Fact]
+    public async Task GetMetadataAsync_ReturnsCachedMetadata_ForProjectDirectoryAndProjectFile()
+    {
+        var provider = CreateProvider();
+        var documentUri = new Uri("file:///test.xaml");
+        var first = await provider.GetMetadataAsync(new XamlDocumentContext(documentUri, "<Grid />", AppContext.BaseDirectory));
+        var second = await provider.GetMetadataAsync(new XamlDocumentContext(documentUri, "<Grid />", Path.Combine(AppContext.BaseDirectory, "Test.csproj")));
+
+        Assert.Same(first, second);
+    }
+
+    [Fact]
+    public async Task GetMetadataAsync_ReleasesAssemblyFile_AfterCachingMetadata()
+    {
+        var sourceAssemblyPath = GetAssemblyPath("A2v10.Xaml.dll");
+        var tempDirectory = Directory.CreateTempSubdirectory();
+
+        try
+        {
+            var copiedAssemblyPath = Path.Combine(tempDirectory.FullName, "A2v10.Xaml.dll");
+            File.Copy(sourceAssemblyPath, copiedAssemblyPath);
+
+            var provider = new ReflectionMetadataProvider(new StubAssemblyReferenceResolver(copiedAssemblyPath));
+
+            _ = await provider.GetMetadataAsync(CreateDocumentContext());
+
+            using var stream = new FileStream(copiedAssemblyPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+            Assert.True(stream.CanWrite);
+        }
+        finally
+        {
+            tempDirectory.Delete(true);
+        }
+    }
+
+    [Fact]
+    public void CreateResolverPaths_IncludesAllDllsFromAssembliesDirectory()
+    {
+        var root = Directory.CreateTempSubdirectory();
+
+        try
+        {
+            var assembliesDirectory = Path.Combine(root.FullName, "MainApp", "@assemblies");
+            var nestedDirectory = Path.Combine(assembliesDirectory, "nested");
+            Directory.CreateDirectory(nestedDirectory);
+
+            var candidateAssemblyPath = Path.Combine(nestedDirectory, "MainApp.Controls.dll");
+            var dependencyAssemblyPath = Path.Combine(assembliesDirectory, "System.Xaml.dll");
+            File.WriteAllText(candidateAssemblyPath, string.Empty);
+            File.WriteAllText(dependencyAssemblyPath, string.Empty);
+
+            var method = typeof(ReflectionMetadataProvider).GetMethod("CreateResolverPaths", BindingFlags.NonPublic | BindingFlags.Static);
+            Assert.NotNull(method);
+
+            var resolverPaths = Assert.IsAssignableFrom<IReadOnlyCollection<string>>(method!.Invoke(null, [new[] { candidateAssemblyPath }])!);
+
+            Assert.Contains(candidateAssemblyPath, resolverPaths);
+            Assert.Contains(dependencyAssemblyPath, resolverPaths);
+        }
+        finally
+        {
+            root.Delete(true);
+        }
     }
 
     private static ReflectionMetadataProvider CreateProvider()

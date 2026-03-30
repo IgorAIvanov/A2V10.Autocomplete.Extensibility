@@ -20,11 +20,12 @@ public sealed class LspServerHostTests
             XamlCompletionKind.TagName,
             true);
 
+        var metadataProvider = new StubMetadataProvider(MetadataRegistry.Empty);
         var handler = new CompletionRequestHandler(
             new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, "Dia", null, null, 3)),
-            new StubMetadataProvider(MetadataRegistry.Empty),
+            metadataProvider,
             new StubCompletionService([suggestion]));
-        var host = new LspServerHost(handler, new TextDocumentStore());
+        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
 
         var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xaml");
 
@@ -81,6 +82,133 @@ public sealed class LspServerHostTests
         }
     }
 
+    [Fact]
+    public async Task RunAsync_DidOpen_PreloadsMetadataFromOpenedFileProject()
+    {
+        var metadataProvider = new CapturingMetadataProvider();
+        var handler = new CompletionRequestHandler(
+            new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, string.Empty, null, null, 0)),
+            metadataProvider,
+            new StubCompletionService([]));
+        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
+
+        var rootPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var projectPath = Path.Combine(rootPath, "MainApp", "MainApp.csproj");
+        var filePath = Path.Combine(rootPath, "MainApp", "Views", "View.xaml");
+        Directory.CreateDirectory(Path.GetDirectoryName(projectPath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+        await File.WriteAllTextAsync(projectPath, "<Project />");
+
+        try
+        {
+            await File.WriteAllTextAsync(filePath, "<Page />");
+
+            await using var input = new MemoryStream(Encoding.UTF8.GetBytes(CreateMessage(JsonSerializer.Serialize(new
+            {
+                jsonrpc = "2.0",
+                id = 1,
+                method = "textDocument/didOpen",
+                @params = new
+                {
+                    textDocument = new
+                    {
+                        uri = new Uri(filePath).AbsoluteUri,
+                        text = "<Page />"
+                    }
+                }
+            }))));
+            await using var output = new MemoryStream();
+
+            await host.RunAsync(input, output);
+
+            Assert.Equal([projectPath], metadataProvider.ProjectPaths);
+        }
+        finally
+        {
+            Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task RunAsync_DidOpen_PreloadFailure_DoesNotBreakCompletion()
+    {
+        var metadata = new MetadataRegistry([new TagDescriptor("Dialog")]);
+        var metadataProvider = new InitializeFailingMetadataProvider(metadata);
+        var suggestion = new CompletionSuggestion("Dialog", "Dialog", null, XamlCompletionKind.TagName);
+        var handler = new CompletionRequestHandler(
+            new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, "Di", null, null, 3)),
+            metadataProvider,
+            new StubCompletionService([suggestion]));
+        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
+
+        var rootPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        Directory.CreateDirectory(rootPath);
+        var filePath = Path.Combine(rootPath, "View.xaml");
+
+        try
+        {
+            await File.WriteAllTextAsync(filePath, "<Di");
+            await File.WriteAllTextAsync(Path.Combine(rootPath, "View.csproj"), "<Project />");
+
+            var openMessage = CreateMessage(JsonSerializer.Serialize(new
+            {
+                jsonrpc = "2.0",
+                id = 1,
+                method = "textDocument/didOpen",
+                @params = new
+                {
+                    textDocument = new
+                    {
+                        uri = new Uri(filePath).AbsoluteUri,
+                        text = "<Di"
+                    }
+                }
+            }));
+
+            var completionMessage = CreateMessage(JsonSerializer.Serialize(new
+            {
+                jsonrpc = "2.0",
+                id = 2,
+                method = "textDocument/completion",
+                @params = new
+                {
+                    textDocument = new
+                    {
+                        uri = new Uri(filePath).AbsoluteUri
+                    },
+                    position = new
+                    {
+                        line = 0,
+                        character = 3
+                    }
+                }
+            }));
+
+            await using var input = new MemoryStream(Encoding.UTF8.GetBytes(openMessage + completionMessage));
+            await using var output = new MemoryStream();
+
+            await host.RunAsync(input, output);
+
+            output.Position = 0;
+            var payloads = ReadPayloads(output);
+
+            Assert.Single(payloads);
+            using var completionDocument = JsonDocument.Parse(payloads[0]);
+
+            Assert.Equal(2, completionDocument.RootElement.GetProperty("id").GetInt32());
+            Assert.Equal("Dialog", completionDocument.RootElement.GetProperty("result").GetProperty("items")[0].GetProperty("label").GetString());
+        }
+        finally
+        {
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
     private static string CreateMessage(string json)
         => $"Content-Length: {Encoding.UTF8.GetByteCount(json)}\r\n\r\n{json}";
 
@@ -102,6 +230,56 @@ public sealed class LspServerHostTests
         }
     }
 
+    private static IReadOnlyList<string> ReadPayloads(Stream stream)
+    {
+        var result = new List<string>();
+        using var reader = new StreamReader(stream, Encoding.UTF8, true, 1024, true);
+
+        while (true)
+        {
+            int? contentLength = null;
+
+            while (true)
+            {
+                var line = reader.ReadLine();
+                if (line is null)
+                {
+                    return result;
+                }
+
+                if (line.Length == 0)
+                {
+                    break;
+                }
+
+                if (line.StartsWith("Content-Length:", StringComparison.OrdinalIgnoreCase))
+                {
+                    contentLength = int.Parse(line["Content-Length:".Length..].Trim());
+                }
+            }
+
+            if (contentLength is null or <= 0)
+            {
+                return result;
+            }
+
+            var buffer = new char[contentLength.Value];
+            var totalRead = 0;
+            while (totalRead < buffer.Length)
+            {
+                var read = reader.Read(buffer, totalRead, buffer.Length - totalRead);
+                if (read == 0)
+                {
+                    return result;
+                }
+
+                totalRead += read;
+            }
+
+            result.Add(new string(buffer));
+        }
+    }
+
     private sealed class StubXamlContextParser(XamlCompletionContext context) : IXamlContextParser
     {
         public XamlCompletionContext Parse(string text, int position) => context;
@@ -111,6 +289,30 @@ public sealed class LspServerHostTests
     {
         public Task<MetadataRegistry> GetMetadataAsync(XamlDocumentContext documentContext, CancellationToken cancellationToken = default)
             => Task.FromResult(metadata);
+    }
+
+    private sealed class CapturingMetadataProvider : IMetadataProvider
+    {
+        public List<string?> ProjectPaths { get; } = [];
+
+        public Task<MetadataRegistry> GetMetadataAsync(XamlDocumentContext documentContext, CancellationToken cancellationToken = default)
+        {
+            ProjectPaths.Add(documentContext.ProjectPath);
+            return Task.FromResult(MetadataRegistry.Empty);
+        }
+    }
+
+    private sealed class InitializeFailingMetadataProvider(MetadataRegistry metadata) : IMetadataProvider
+    {
+        public Task<MetadataRegistry> GetMetadataAsync(XamlDocumentContext documentContext, CancellationToken cancellationToken = default)
+        {
+            if (documentContext.DocumentUri.AbsolutePath.Contains("__open__", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("Preload failed.");
+            }
+
+            return Task.FromResult(metadata);
+        }
     }
 
     private sealed class StubCompletionService(IReadOnlyCollection<CompletionSuggestion> suggestions) : ICompletionService

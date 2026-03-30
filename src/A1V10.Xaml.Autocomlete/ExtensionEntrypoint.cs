@@ -17,7 +17,7 @@ namespace A1V10.Xaml.Autocomlete
                     version: this.ExtensionAssemblyVersion,
                     publisherName: "Igor Ivanov",
                     displayName: "A2V10.Xaml.Autocomlete",
-                    description: "Extension description"),
+                    description: "Плагін для автозаповнення XAML файлів A2V10"),
         };
 
         /// <inheritdoc />
