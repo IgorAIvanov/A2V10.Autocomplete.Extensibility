@@ -26,6 +26,7 @@ public sealed class CompletionRequestHandler
         {
             if (!File.Exists(request.FilePath))
             {
+                DiagnosticLog.Info($"Completion request skipped because file '{request.FilePath}' does not exist.");
                 return new CompletionResponse([]);
             }
 
@@ -36,6 +37,8 @@ public sealed class CompletionRequestHandler
         var context = _contextParser.Parse(text, request.Position);
         var metadata = await _metadataProvider.GetMetadataAsync(document, cancellationToken);
         var suggestions = _completionService.GetSuggestions(context, metadata);
+
+        DiagnosticLog.Info($"Completion handled for '{request.FilePath}'. Project='{request.ProjectPath ?? "<none>"}', Position={request.Position}, Context={context.Kind}, Prefix='{context.Prefix}', Tags={metadata.Tags.Count}, Suggestions={suggestions.Count}.");
 
         return new CompletionResponse(suggestions, context.Prefix.Length);
     }

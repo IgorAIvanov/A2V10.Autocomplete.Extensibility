@@ -29,14 +29,18 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         var assemblyPaths = await _assemblyReferenceResolver.ResolveAsync(documentContext, cancellationToken);
         if (assemblyPaths.Count == 0)
         {
+            DiagnosticLog.Info($"No assemblies were resolved for project '{documentContext.ProjectPath ?? "<none>"}'.");
             return MetadataRegistry.Empty;
         }
 
         var cacheKey = CreateCacheKey(documentContext.ProjectPath, assemblyPaths);
         if (_cache.TryGet(cacheKey, out var metadata))
         {
+            DiagnosticLog.Info($"Metadata cache hit for project '{documentContext.ProjectPath ?? "<none>"}'. Assemblies={assemblyPaths.Count}, Tags={metadata.Tags.Count}.");
             return metadata;
         }
+
+        DiagnosticLog.Info($"Metadata cache miss for project '{documentContext.ProjectPath ?? "<none>"}'. Assemblies={assemblyPaths.Count}.");
 
         var tags = assemblyPaths
             .SelectMany(path => LoadTags(path, cancellationToken))
@@ -47,6 +51,7 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
 
         metadata = new MetadataRegistry(tags);
         _cache.Set(cacheKey, metadata);
+        DiagnosticLog.Info($"Metadata cached for project '{documentContext.ProjectPath ?? "<none>"}'. Tags={metadata.Tags.Count}.");
         return metadata;
     }
 
@@ -58,8 +63,9 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         {
             assembly = Assembly.LoadFrom(assemblyPath);
         }
-        catch
+        catch (Exception ex)
         {
+            DiagnosticLog.Error($"Failed to load assembly '{assemblyPath}'.", ex);
             yield break;
         }
 
@@ -71,21 +77,32 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         catch (ReflectionTypeLoadException ex)
         {
             exportedTypes = ex.Types.Where(static type => type is not null).Cast<Type>().ToArray();
+            DiagnosticLog.Info($"Partially loaded exported types from '{assemblyPath}'. Types={exportedTypes.Length}, LoaderExceptions={ex.LoaderExceptions.Length}.");
         }
-        catch
+        catch (Exception ex)
         {
+            DiagnosticLog.Error($"Failed to enumerate exported types from '{assemblyPath}'.", ex);
             yield break;
         }
 
-        foreach (var type in exportedTypes.Where(IsTagType))
+        var tags = exportedTypes.Where(IsTagType)
+            .Select(type =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var attributes = GetAttributes(type)
+                    .OrderBy(static attribute => attribute.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+
+                return new TagDescriptor(type.Name, type.FullName, attributes);
+            })
+            .ToArray();
+
+        DiagnosticLog.Info($"Loaded {tags.Length} XAML tags from '{Path.GetFileName(assemblyPath)}'.");
+
+        foreach (var tag in tags)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var attributes = GetAttributes(type)
-                .OrderBy(static attribute => attribute.Name, StringComparer.OrdinalIgnoreCase)
-                .ToArray();
-
-            yield return new TagDescriptor(type.Name, type.FullName, attributes);
+            yield return tag;
         }
     }
 

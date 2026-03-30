@@ -49,6 +49,18 @@ public sealed class ReflectionMetadataProviderTests
         Assert.Contains("false", bold.AllowedValues);
     }
 
+    [Fact]
+    public async Task GetMetadataAsync_ReturnsCachedMetadata_ForSameProjectAndAssemblies()
+    {
+        var provider = CreateProvider();
+        var documentContext = CreateDocumentContext();
+
+        var first = await provider.GetMetadataAsync(documentContext);
+        var second = await provider.GetMetadataAsync(documentContext);
+
+        Assert.Same(first, second);
+    }
+
     private static ReflectionMetadataProvider CreateProvider()
         => new(new StubAssemblyReferenceResolver(GetAssemblyPath("A2v10.Xaml.dll")));
 

@@ -23,6 +23,7 @@ public sealed class FileSystemAssemblyReferenceResolver : IAssemblyReferenceReso
 
         if (string.IsNullOrWhiteSpace(documentContext.ProjectPath))
         {
+            DiagnosticLog.Info("Skipping assembly resolution because project path is missing.");
             return Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>());
         }
 
@@ -32,12 +33,14 @@ public sealed class FileSystemAssemblyReferenceResolver : IAssemblyReferenceReso
 
         if (string.IsNullOrWhiteSpace(projectDirectory))
         {
+            DiagnosticLog.Info($"Skipping assembly resolution because project directory could not be determined from '{documentContext.ProjectPath}'.");
             return Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>());
         }
 
         var assembliesDirectory = Path.Combine(projectDirectory, "@assemblies");
         if (!Directory.Exists(assembliesDirectory))
         {
+            DiagnosticLog.Info($"Assemblies directory '{assembliesDirectory}' was not found.");
             return Task.FromResult<IReadOnlyCollection<string>>(Array.Empty<string>());
         }
 
@@ -45,6 +48,8 @@ public sealed class FileSystemAssemblyReferenceResolver : IAssemblyReferenceReso
             .Where(IsCandidateAssembly)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+        DiagnosticLog.Info($"Resolved {assemblies.Length} candidate assemblies from '{assembliesDirectory}'.");
 
         return Task.FromResult<IReadOnlyCollection<string>>(assemblies);
     }

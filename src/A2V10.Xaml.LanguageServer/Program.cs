@@ -3,14 +3,14 @@ using A2V10.Xaml.LanguageServer.Protocol;
 
 try
 {
-    await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer] Starting. Args: {string.Join(' ', args)}");
+    await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer][INFO] Starting. Args: {string.Join(' ', args)}");
 
     var composition = LanguageServerComposition.CreateDefault();
     var host = new LspServerHost(composition.CompletionHandler, new TextDocumentStore());
 
     if (args.Length >= 2 && string.Equals(args[0], "--complete", StringComparison.OrdinalIgnoreCase))
     {
-        await Console.Error.WriteLineAsync("[A2V10.Xaml.LanguageServer] Running in completion smoke test mode.");
+        await Console.Error.WriteLineAsync("[A2V10.Xaml.LanguageServer][INFO] Running in completion smoke test mode.");
 
         var filePath = Path.GetFullPath(args[1]);
         var position = args.Length >= 3 && int.TryParse(args[2], out var parsedPosition)
@@ -29,7 +29,7 @@ try
 
     if (args.Length >= 1 && string.Equals(args[0], "--stdio", StringComparison.OrdinalIgnoreCase))
     {
-        await Console.Error.WriteLineAsync("[A2V10.Xaml.LanguageServer] Running in stdio mode.");
+        await Console.Error.WriteLineAsync("[A2V10.Xaml.LanguageServer][INFO] Running in stdio mode.");
         await host.RunAsync(Console.OpenStandardInput(), Console.OpenStandardOutput());
         return 0;
     }
@@ -41,6 +41,6 @@ try
 }
 catch (Exception ex)
 {
-    await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer] Fatal error: {ex}");
+    await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer][ERROR] Fatal error: {ex}");
     return 1;
 }
