@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="A2v10.ViewEngine.Xaml" Version="10.1.8630" />
+    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
