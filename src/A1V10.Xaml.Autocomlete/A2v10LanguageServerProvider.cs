@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.RpcContracts.LanguageServerProvider;
 using Nerdbank.Streams;
 using Microsoft.VisualStudio.Extensibility.Editor;
 
-namespace A1V10.Xaml.Autocomlete;
+namespace A2V10.Xaml.Autocomlete;
 
 #pragma warning disable VSEXTPREVIEW_LSP // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 [VisualStudioContribution]

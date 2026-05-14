@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.Extensibility;
 
-namespace A1V10.Xaml.Autocomlete
+namespace A2V10.Xaml.Autocomlete
 {
     /// <summary>
     /// Extension entrypoint for the VisualStudio.Extensibility extension.
