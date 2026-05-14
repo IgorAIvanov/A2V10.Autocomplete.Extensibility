@@ -4,6 +4,7 @@ using A2V10.Xaml.LanguageServer.Protocol;
 try
 {
     await Console.Error.WriteLineAsync($"[A2V10.Xaml.LanguageServer] Starting. Args: {string.Join(' ', args)}");
+    await Console.Error.FlushAsync();
 
     var composition = LanguageServerComposition.CreateDefault();
     var host = new LspServerHost(composition.CompletionHandler, composition.MetadataProvider, new TextDocumentStore());
@@ -30,6 +31,7 @@ try
     if (args.Length >= 1 && string.Equals(args[0], "--stdio", StringComparison.OrdinalIgnoreCase))
     {
         await Console.Error.WriteLineAsync("[A2V10.Xaml.LanguageServer] Running in stdio mode.");
+        await Console.Error.FlushAsync();
         await host.RunAsync(Console.OpenStandardInput(), Console.OpenStandardOutput());
         return 0;
     }

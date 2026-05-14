@@ -26,64 +26,81 @@ public sealed class LspServerHost
 
     public async Task RunAsync(Stream input, Stream output, CancellationToken cancellationToken = default)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            var message = await ReadMessageAsync(input, cancellationToken);
-            if (message is null)
-            {
-                return;
-            }
+            await Console.Error.WriteLineAsync("[LspServerHost] Starting message loop.");
+            await Console.Error.FlushAsync();
 
-            using var document = JsonDocument.Parse(message);
-            var root = document.RootElement;
-            if (!root.TryGetProperty("method", out var methodProperty))
+            while (!cancellationToken.IsCancellationRequested)
             {
-                continue;
-            }
-
-            var method = methodProperty.GetString();
-            var hasId = root.TryGetProperty("id", out var idProperty);
-
-            switch (method)
-            {
-                case "initialize":
-                    if (hasId)
-                    {
-                        await WriteInitializeResponseAsync(output, idProperty, cancellationToken);
-                    }
-                    break;
-                case "initialized":
-                    break;
-                case "textDocument/didOpen":
-                    await HandleDidOpenAsync(root, cancellationToken);
-                    break;
-                case "textDocument/didChange":
-                    HandleDidChange(root);
-                    break;
-                case "textDocument/didClose":
-                    HandleDidClose(root);
-                    break;
-                case "textDocument/completion":
-                    if (hasId)
-                    {
-                        await HandleCompletionAsync(root, idProperty, output, cancellationToken);
-                    }
-                    break;
-                case "shutdown":
-                    if (hasId)
-                    {
-                        await WriteNullResultAsync(output, idProperty, cancellationToken);
-                    }
-                    break;
-                case "exit":
+                var message = await ReadMessageAsync(input, cancellationToken);
+                if (message is null)
+                {
+                    await Console.Error.WriteLineAsync("[LspServerHost] Received null message (EOF). Exiting.");
+                    await Console.Error.FlushAsync();
                     return;
-                default:
-                    if (hasId)
-                    {
-                        await WriteMethodNotFoundAsync(output, idProperty, cancellationToken);
-                    }
-                    break;
+                }
+
+                using var document = JsonDocument.Parse(message);
+                var root = document.RootElement;
+                if (!root.TryGetProperty("method", out var methodProperty))
+                {
+                    continue;
+                }
+
+                var method = methodProperty.GetString();
+                var hasId = root.TryGetProperty("id", out var idProperty);
+
+                await Console.Error.WriteLineAsync($"[LspServerHost] Processing method: {method}");
+                await Console.Error.FlushAsync();
+
+                switch (method)
+                {
+                    case "initialize":
+                        if (hasId)
+                        {
+                            await WriteInitializeResponseAsync(output, idProperty, cancellationToken);
+                        }
+                        break;
+                    case "initialized":
+                        break;
+                    case "textDocument/didOpen":
+                        await HandleDidOpenAsync(root, cancellationToken);
+                        break;
+                    case "textDocument/didChange":
+                        HandleDidChange(root);
+                        break;
+                    case "textDocument/didClose":
+                        HandleDidClose(root);
+                        break;
+                    case "textDocument/completion":
+                        if (hasId)
+                        {
+                            await HandleCompletionAsync(root, idProperty, output, cancellationToken);
+                        }
+                        break;
+                    case "shutdown":
+                        if (hasId)
+                        {
+                            await WriteNullResultAsync(output, idProperty, cancellationToken);
+                        }
+                        break;
+                    case "exit":
+                        return;
+                    default:
+                        if (hasId)
+                        {
+                            await WriteMethodNotFoundAsync(output, idProperty, cancellationToken);
+                        }
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            await Console.Error.WriteLineAsync($"[LspServerHost] Fatal exception in RunAsync: {ex}");
+            await Console.Error.FlushAsync();
+            throw;
         }
     }
 

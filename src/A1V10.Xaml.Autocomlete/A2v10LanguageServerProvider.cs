@@ -19,6 +19,9 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
        : base(container, extensibilityObject)
     {
         _traceSource = traceSource;
+        var msg = "A2V10 language server provider constructed.";
+        _traceSource.TraceEvent(TraceEventType.Information, 0, msg);
+        Debug.WriteLine($"[A2V10] {msg}");
     }
 
     [VisualStudioContribution]
@@ -32,11 +35,6 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
         "A2V10 XAML Language Server", new[]
         {
              DocumentFilter.FromDocumentType(XamlDocumentType),
-         //    DocumentFilter.FromDocumentType(LanguageServerBaseDocumentType),
-            
-           // DocumentFilter.FromDocumentType(XamlDocumentType)
-           // DocumentFilter.FromGlobPattern("**/*.xaml", false)
-            
         } 
         );
  // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -46,7 +44,9 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
         cancellationToken.ThrowIfCancellationRequested();
 
         var startInfo = CreateStartInfo();
-        _traceSource.TraceEvent(TraceEventType.Information, 0, $"Starting language server. FileName='{startInfo.FileName}', Arguments='{string.Join(" ", startInfo.ArgumentList)}'");
+        var msg = $"Starting language server. FileName='{startInfo.FileName}', Arguments='{string.Join(" ", startInfo.ArgumentList)}'";
+        _traceSource.TraceEvent(TraceEventType.Information, 0, msg);
+        Debug.WriteLine($"[A2V10] {msg}");
 
         var process = Process.Start(startInfo)
             ?? throw new InvalidOperationException("Unable to start A2V10.Xaml.LanguageServer process.");
@@ -57,13 +57,23 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
         {
             if (!string.IsNullOrWhiteSpace(args.Data))
             {
-                _traceSource.TraceEvent(TraceEventType.Error, 0, $"Language server stderr: {args.Data}");
+                var msg = $"Language server stderr: {args.Data}";
+                _traceSource.TraceEvent(TraceEventType.Error, 0, msg);
+                Debug.WriteLine($"[A2V10] {msg}");
             }
         };
-        process.Exited += (_, _) => _traceSource.TraceEvent(TraceEventType.Information, 0, $"Language server exited with code {process.ExitCode}.");
+        process.Exited += (_, _) =>
+        {
+            var msg = $"Language server exited with code {process.ExitCode}.";
+            _traceSource.TraceEvent(TraceEventType.Information, 0, msg);
+            Debug.WriteLine($"[A2V10] {msg}");
+        };
         process.BeginErrorReadLine();
 
-        _traceSource.TraceEvent(TraceEventType.Information, 0, $"Language server process started. Id={process.Id}");
+        var msg2 = $"Language server process started. Id={process.Id}";
+        _traceSource.TraceEvent(TraceEventType.Information, 0, msg2);
+        Debug.WriteLine($"[A2V10] {msg2}");
+
         var stream = FullDuplexStream.Splice(process.StandardOutput.BaseStream, process.StandardInput.BaseStream);
         var pipe = stream.UsePipe(cancellationToken: cancellationToken);
         return Task.FromResult<IDuplexPipe?>(pipe);
@@ -89,24 +99,16 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
             ? AppContext.BaseDirectory
             : extensionDirectory;
         var serverDirectory = Path.Combine(baseDirectory, "LanguageServer");
-        var serverExePath = Path.Combine(serverDirectory, "A2V10.Xaml.LanguageServer.exe");
         var serverDllPath = Path.Combine(serverDirectory, "A2V10.Xaml.LanguageServer.dll");
 
-        ProcessStartInfo startInfo;
-        if (File.Exists(serverExePath))
+        if (!File.Exists(serverDllPath))
         {
-            startInfo = new ProcessStartInfo(serverExePath);
-        }
-        else if (File.Exists(serverDllPath))
-        {
-            startInfo = new ProcessStartInfo("dotnet");
-            startInfo.ArgumentList.Add(serverDllPath);
-        }
-        else
-        {
-            throw new FileNotFoundException("Unable to find packaged A2V10.Xaml.LanguageServer executable.", serverDllPath);
+            throw new FileNotFoundException("Unable to find packaged A2V10.Xaml.LanguageServer.dll", serverDllPath);
         }
 
+        // Always use 'dotnet' from PATH to avoid Visual Studio's bundled .NET 10 runtime mismatch
+        var startInfo = new ProcessStartInfo("dotnet");
+        startInfo.ArgumentList.Add(serverDllPath);
         startInfo.ArgumentList.Add("--stdio");
         startInfo.WorkingDirectory = serverDirectory;
         startInfo.CreateNoWindow = true;
