@@ -100,16 +100,14 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
             ? AppContext.BaseDirectory
             : extensionDirectory;
         var serverDirectory = Path.Combine(baseDirectory, "LanguageServer");
-        var serverDllPath = Path.Combine(serverDirectory, "A2V10.Xaml.LanguageServer.dll");
+        var serverExePath = Path.Combine(serverDirectory, "A2V10.Xaml.LanguageServer.exe");
 
-        if (!File.Exists(serverDllPath))
+        if (!File.Exists(serverExePath))
         {
-            throw new FileNotFoundException("Unable to find packaged A2V10.Xaml.LanguageServer.dll", serverDllPath);
+            throw new FileNotFoundException("Unable to find packaged A2V10.Xaml.LanguageServer.exe", serverExePath);
         }
 
-        // Always use 'dotnet' from PATH to avoid Visual Studio's bundled .NET 10 runtime mismatch
-        var startInfo = new ProcessStartInfo("dotnet");
-        startInfo.ArgumentList.Add(serverDllPath);
+        var startInfo = new ProcessStartInfo(serverExePath);
         startInfo.ArgumentList.Add("--stdio");
         startInfo.WorkingDirectory = serverDirectory;
         startInfo.CreateNoWindow = true;
