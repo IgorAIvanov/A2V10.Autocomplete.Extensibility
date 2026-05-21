@@ -1,0 +1,177 @@
+﻿<div>
+	<!--title:Xaml.DataGrid-->
+	<!--keywords:DataGrid-->
+	<div class="title">
+		<h1>
+			Елемент DataGrid
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+	<p>
+		Являє собою таблицю з даними. Працює тільки з джерелом даних. Відображає один рядок
+		для кожного елементу масиву - джерела даних. Стовпчики таблиці визначаються колекцією вкладених об'єктів
+		<a class="code-link" href="datagridcolumn">DataGridColumn</a>.
+	</p>
+	<p>
+		Спільно з компонентом <a class="code-link" href="../components/collectionview">CollectionView</a>,
+		таблица підтримує сортування, фільтрацію, розбиття на сторінки і групування рядків.
+	</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/control">Control</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td class="fit">Array</td>
+				<td>
+					Завжди прив'язка - <a class="code-link" href="../bind/bind">Bind</a>. Джерело даних для відображення.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Compact</td>
+				<td>Boolean</td>
+				<td>
+					Компактний стиль відображення таблиці.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Hover</td>
+				<td>Boolean</td>
+				<td>
+					Виділення рядка при наведенні курсора миші.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Striped</td>
+				<td>Boolean</td>
+				<td>
+					Розфарбування таблиці "у смужку" з виділенням парних і непарних рядків.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">FixedHeader</td>
+				<td>Boolean</td>
+				<td>
+					Зафіксувати "шапку" таблиці при прокрутці.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Style</td>
+				<td><code>DataGridStyle</code></td>
+				<td>
+					Стиль відображення таблиці. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) звичайний стиль.</li>
+						<li><span class="prop-name">Light</span> - світлий стиль.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Background</td>
+				<td><a class="code-link" href="/xaml/enums/backgroundstyle">BackgroundStyle</a></td>
+				<td>Колір фона.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Mark</td>
+				<td>Object</td>
+				<td>
+					Тільки прив'язка (<a class="code-link" href="/xaml/bind/bind">Bind</a>). Маркування рядків таблиці.
+					Маркер являє собою вертикальну лінію в лівому стовпчику та/або позначення кольором.
+					Подробиці нижче.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">MarkerStyle</td>
+				<td><code>RowMarkerStyle</code></td>
+				<td>
+					Стиль маркування рядку в таблиці.
+					Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">None</span> - (за замовчуванням) нема маркування.</li>
+						<li><span class="prop-name">Row</span> - фоновий колір.</li>
+						<li><span class="prop-name">Marker</span> - маркер у вигляді лінії в першому стовпчику.</li>
+						<li><span class="prop-name">Both</span> - обидва види маркування.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">EmptyPanel</td>
+				<td><a class="code-link" href="/xaml/abstract/uielement">UIElement</a></td>
+				<td>
+					Панель, яка відображається, якщо вміст пустий. Зазвичай являє собою об'єкт
+					<a class="code-link" href="emptypanel">EmptyPanel</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DoubleClick</td>
+				<td width="1px"><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>
+					Команда, яку буде виконано при подвійному кліку на рядку таблиці.
+					Не забудьте передати в команду аргумент.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ContextMenu</td>
+				<td width="1px"><a class="code-link" href="/xaml/containers/dropdownmenu">DropDownMenu</a></td>
+				<td>
+					Контекстне меню, яке буде показуватися по правій кнопці миші.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">RowDetails</td>
+				<td width="1px"><a class="code-link" href="/xaml/controls/datagridrowdetails">DataGridRowDetails</a></td>
+				<td>
+					Деталізація для рядку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">AutoSelect</td>
+				<td><a class="code-link" href="/xaml/enums/autoselectmode">AutoSelectMode</a></td>
+				<td>
+					Автоматично виділяти елемент після завантаження або оновлення списку.
+					Підтримуються тільки значення <code>FirstItem</code> і <code>LastItem</code>.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/control">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>Маркування рядків таблиці</h4>
+	<p>
+		Вираз прив`язки для властивості <code>Mark</code> повинен повертати текстовий рядок, який являє собою додатковий
+		css-клас, що додається до рядку.
+
+		В темі за замовчуванням підтримуються наступні варіанти маркування рядків:
+		<div style="display:inline-grid;grid-template-columns:auto 120px 120px;align-items:center;grid-gap:4px 8px;">
+			<code>значення Mark</code><code>"Marker"</code><code>"Row"</code>
+			<code>"danger", "red", "error"</code>
+			<span class="markcss_sample" style="border-left-color:#fc7c7c;color:#fc7c7c">#fc7c7c</span>
+			<span class="markcss_sample" style="background-color:#fff5fa;border-width:1px">#fff5fa</span>
+			<code>"warning", "yellow"</code>
+			<span class="markcss_sample" style="border-left-color:#ffd700;color:#ffd700">#ffd700</span>
+			<span class="markcss_sample" style="background-color:#fffff0;border-width:1px">#fffff0</span>
+			<code>"success", "green"</code>
+			<span class="markcss_sample" style="border-left-color:#89e489;color:#89e489">#89e489</span>
+			<span class="markcss_sample" style="background-color:#f5fff5;border-width:1px">#f5fff5</span>
+			<code>"info", "cyan"</code>
+			<span class="markcss_sample" style="border-left-color:#72eaea;color:#72eaea">#72eaea</span>
+			<span class="markcss_sample" style="background-color:#f0ffff;border-width:1px">#f0ffff</span>
+		</div>
+	</p>
+
+</div>

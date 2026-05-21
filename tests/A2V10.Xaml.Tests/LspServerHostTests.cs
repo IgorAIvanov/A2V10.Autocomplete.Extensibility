@@ -17,6 +17,7 @@ public sealed class LspServerHostTests
             "Dialog",
             "Dialog xmlns=\"clr-namespace:A2v10.Xaml;assembly=A2v10.Xaml\"$0></Dialog>",
             "Dialog root",
+            "Dialog root full documentation",
             XamlCompletionKind.TagName,
             true);
 
@@ -25,7 +26,7 @@ public sealed class LspServerHostTests
             new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, "Dia", null, null, 3)),
             metadataProvider,
             new StubCompletionService([suggestion]));
-        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
+        var host = new LspServerHost(handler, new HoverRequestHandler(metadataProvider), metadataProvider, new TextDocumentStore());
 
         var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xaml");
 
@@ -71,6 +72,9 @@ public sealed class LspServerHostTests
             Assert.Equal(0, item.GetProperty("textEdit").GetProperty("range").GetProperty("end").GetProperty("line").GetInt32());
             Assert.Equal(3, item.GetProperty("textEdit").GetProperty("range").GetProperty("end").GetProperty("character").GetInt32());
             Assert.Equal(2, item.GetProperty("insertTextFormat").GetInt32());
+            Assert.Equal("Dialog root", item.GetProperty("detail").GetString());
+            Assert.Equal("markdown", item.GetProperty("documentation").GetProperty("kind").GetString());
+            Assert.Equal("Dialog root full documentation", item.GetProperty("documentation").GetProperty("value").GetString());
             Assert.Equal(15, item.GetProperty("kind").GetInt32());
         }
         finally
@@ -90,7 +94,7 @@ public sealed class LspServerHostTests
             new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, string.Empty, null, null, 0)),
             metadataProvider,
             new StubCompletionService([]));
-        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
+        var host = new LspServerHost(handler, new HoverRequestHandler(metadataProvider), metadataProvider, new TextDocumentStore());
 
         var rootPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         var projectPath = Path.Combine(rootPath, "MainApp", "MainApp.csproj");
@@ -134,12 +138,12 @@ public sealed class LspServerHostTests
     {
         var metadata = new MetadataRegistry([new TagDescriptor("Dialog")]);
         var metadataProvider = new InitializeFailingMetadataProvider(metadata);
-        var suggestion = new CompletionSuggestion("Dialog", "Dialog", null, XamlCompletionKind.TagName);
+        var suggestion = new CompletionSuggestion("Dialog", "Dialog", null, null, XamlCompletionKind.TagName);
         var handler = new CompletionRequestHandler(
             new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.TagName, "Di", null, null, 3)),
             metadataProvider,
             new StubCompletionService([suggestion]));
-        var host = new LspServerHost(handler, metadataProvider, new TextDocumentStore());
+        var host = new LspServerHost(handler, new HoverRequestHandler(metadataProvider), metadataProvider, new TextDocumentStore());
 
         var rootPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(rootPath);
@@ -206,6 +210,74 @@ public sealed class LspServerHostTests
             }
 
             Directory.Delete(rootPath, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task RunAsync_WritesHoverResponseForAttribute()
+    {
+        var metadata = new MetadataRegistry(
+        [
+            new TagDescriptor(
+                "TextBox",
+                "Поле для введення тексту.",
+                [
+                    new AttributeDescriptor("Placeholder", "Підказка для порожнього поля.", fullDocumentation: "Підказка для порожнього поля. Відображається, коли значення ще не введено.")
+                ])
+        ]);
+
+        var metadataProvider = new StubMetadataProvider(metadata);
+        var handler = new CompletionRequestHandler(
+            new StubXamlContextParser(new XamlCompletionContext(XamlCompletionKind.AttributeName, "Place", "TextBox", null, 12)),
+            metadataProvider,
+            new StubCompletionService([]));
+        var host = new LspServerHost(handler, new HoverRequestHandler(metadataProvider), metadataProvider, new TextDocumentStore());
+
+        var filePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xaml");
+
+        try
+        {
+            const string text = "<TextBox Placeholder=\"x\" />";
+            await File.WriteAllTextAsync(filePath, text);
+
+            var hoverCharacter = text.IndexOf("Placeholder", StringComparison.Ordinal) + 3;
+            await using var input = new MemoryStream(Encoding.UTF8.GetBytes(CreateMessage(JsonSerializer.Serialize(new
+            {
+                jsonrpc = "2.0",
+                id = 1,
+                method = "textDocument/hover",
+                @params = new
+                {
+                    textDocument = new
+                    {
+                        uri = new Uri(filePath).AbsoluteUri
+                    },
+                    position = new
+                    {
+                        line = 0,
+                        character = hoverCharacter
+                    }
+                }
+            }))));
+            await using var output = new MemoryStream();
+
+            await host.RunAsync(input, output);
+
+            output.Position = 0;
+            using var document = JsonDocument.Parse(ReadPayload(output));
+            var result = document.RootElement.GetProperty("result");
+
+            Assert.Equal("markdown", result.GetProperty("contents").GetProperty("kind").GetString());
+            Assert.Equal("Підказка для порожнього поля. Відображається, коли значення ще не введено.", result.GetProperty("contents").GetProperty("value").GetString());
+            Assert.Equal(0, result.GetProperty("range").GetProperty("start").GetProperty("line").GetInt32());
+            Assert.Equal(text.IndexOf("Placeholder", StringComparison.Ordinal), result.GetProperty("range").GetProperty("start").GetProperty("character").GetInt32());
+        }
+        finally
+        {
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
         }
     }
 

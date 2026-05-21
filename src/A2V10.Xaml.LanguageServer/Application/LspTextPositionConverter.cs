@@ -2,6 +2,38 @@ namespace A2V10.Xaml.LanguageServer.Application;
 
 public static class LspTextPositionConverter
 {
+    public static (int line, int character) ToLineCharacter(string text, int offset)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        var normalizedOffset = Math.Clamp(offset, 0, text.Length);
+        var line = 0;
+        var lineStart = 0;
+
+        for (var index = 0; index < normalizedOffset; index++)
+        {
+            if (text[index] == '\r')
+            {
+                if (index + 1 < normalizedOffset && text[index + 1] == '\n')
+                {
+                    index++;
+                }
+
+                line++;
+                lineStart = index + 1;
+                continue;
+            }
+
+            if (text[index] == '\n')
+            {
+                line++;
+                lineStart = index + 1;
+            }
+        }
+
+        return (line, normalizedOffset - lineStart);
+    }
+
     public static int ToOffset(string text, int line, int character)
     {
         ArgumentNullException.ThrowIfNull(text);

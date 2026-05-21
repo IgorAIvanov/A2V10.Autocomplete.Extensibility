@@ -1,0 +1,114 @@
+﻿<div>
+	<!--title:Bind-->
+	<!--keywords:Bind-->
+	<div class="title">
+		<h1>
+			Прив'язка Bind
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі прив`язки</a>
+		</div>
+	</div>
+
+	<p>
+		Являє собою специальний об'єкт, що описує зв'язок властивості з елементом даних.
+		Практично завжди задається як <a href="/xaml/overview/extensions">розширення розмітки</a>.
+	</p>
+
+	<p>
+		Прив'язка завжди є двосторонньою.
+		Це означає, що при зміні значення в моделі пов'язана властивість зминюється автоматично і навпаки.
+	</p>
+
+	<p>
+		Прив'язувати можна практично будь-які властивості будь-яких елементів. 
+		Зверніть увагу, що властивості прив`язки в свою чергу теж можуть бути прив'язками.
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Path</td>
+				<td>String</td>
+				<td>За замовчуванням. Вираз, що описує шлях до властивості моделі.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DataType</td>
+				<td><a class="code-link" href="/xaml/enums/datatype">DataType</a></td>
+				<td>Тип даних.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Format</td>
+				<td>String</td>
+				<td>Формат відображення.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Mask</td>
+				<td>String</td>
+				<td>Маска відображення значення.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">HideZeros</td>
+				<td>Boolean</td>
+				<td>Приховувати нулові значення. Має сенс тільки для числових форматів.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">NegativeRed</td>
+				<td>Boolean</td>
+				<td>Відображати від'ємні значення червоним кольором. Має сенс тільки для числових форматів.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Filters</td>
+				<td><code>FilterCollection</code></td>
+				<td>
+					Фильтри для обробки зв'язаного значення після оновлення.
+					Являє собою список переліків (через кому). Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Trim</span> - видаляти пробіли на початку і в кінці тексту.</li>
+						<li><span class="prop-name">Upper</span> - конвертувати символи в верхній регістр.</li>
+						<li><span class="prop-name">Lower</span> - конвертувати символи в нижній регістр.</li>
+						<li><span class="prop-name">Barcode</span> - використовується для алфавітно-цифрових кодів. 
+						Замінює килилічні літери на латинські у відповідності до розкладки клавіатури.</li>
+					</ul>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Приклад</h3>
+	<p>
+		Прив'язка елементу <code>Document.Sum</code> моделі до текстового поля і відображення його як суми (з роздільниками тисяч)
+	</p>
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+<!-- прив'язка через розширення розмітки -->
+<TextBox Value="{Bind Document.Sum, DataType=Currency}" />
+
+<!-- прив'язка об'єкта -->
+<TextBox>
+	<TextBox.Value>
+		<Bind Path="Document.Sum" DataType="Currency"/>
+	</TextBox.Value>
+</TextBox>
+</script>
+</pre>
+</p>
+
+	<p>
+		Існують скорочення
+		<a href="/xaml/bind/bindex">BindSum</a>,
+		<a href="/xaml/bind/bindex">BindNumber</a>
+		для прив'язки суми та числа відповідно.
+	</p>
+
+</div>

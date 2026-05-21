@@ -6,3 +6,4 @@
 - Assemblies used for XAML tag discovery will always be located in the `@assemblies` directory at the project root.
 - Use the existing metadata-layer assembly resolver instead of introducing parallel project-resolution logic in the language server when implementing metadata loading behavior.
 - For metadata preloading in the language server, do not add separate warmup abstractions; use existing classes and switch lazy metadata loading to startup-time loading.
+- Import XAML documentation into the repository for this project instead of relying on an external GitHub source during language server operation.

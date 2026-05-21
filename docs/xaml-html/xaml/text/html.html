@@ -1,0 +1,83 @@
+﻿<div>
+	<!--title:Xaml.Html-->
+	<!--keywords:Html-->
+	<div class="title">
+		<h1>
+			Елемент Html
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі текстові елементи</a>
+		</div>
+	</div>
+	<p>
+		Являє собою фрагмент тексту, що відображає html-розмітку.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/inline">Inline</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<p>Властивість вмісту: <code>Content</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Content</td>
+				<td>String</td>
+				<td>Властивість вмісту. Текстовий вміст. Дозволені html-теги</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/inline">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Опис</h3>
+	<p>
+		Використовувати розмітку html при безпосередній роботі з xaml незручно. Доводиться екранувати всі html-теги.
+		Наприклад, якщо потрібно відобразити текст напівжирним шрифтом, доводиться писати такий код:
+<pre class="code-highlight xml">
+<script type="text/template">
+<Html>Це &lt;b&gt;напівжирний&lt;/b&gt; текст</Html>
+</script>
+</pre>
+
+		Замість цього значно зручніше використовувати елементи xaml:
+
+<pre class="code-highlight xml">
+<script type="text/template">
+<Text>Це <Span Bold="True">напівжирний</Span> текст</Text>
+</script>
+</pre>
+
+		Або використовувати елемент CDATA:
+
+<pre class="code-highlight xml">
+		<script type="text/template">
+<Html>
+	<![CDATA[
+	Це <b>напівжирний</b> шрифт
+	]]>
+</Html>
+	</script>
+</pre>
+
+		Найчастіше цей елемент використовується для відображення html-тексту, отриманого, наприклад, з бази даних.
+	</p>
+
+	<p class="tip alert">
+		Зверніть увагу! <b>Ніколи</b> не намагайтеся відобразити html-код, введений користувачем або отриманий з зовнішнього джерела.
+		Хоча система і виключає з такого коду потенційно небезпечні фрагменти на кшталт скриптів та фреймів, розмітка може бути незворотньо зіпсована.
+	</p>
+
+</div>

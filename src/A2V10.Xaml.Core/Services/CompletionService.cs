@@ -33,12 +33,15 @@ public sealed class CompletionService : ICompletionService
 
     private static CompletionSuggestion CreateTagSuggestion(XamlCompletionContext context, TagDescriptor tag)
     {
+        var detail = tag.Description ?? CreateDetail(tag.Name, XamlCompletionKind.TagName, tag.Attributes.Count);
+        var documentation = tag.FullDocumentation ?? tag.Description;
+
         if (!context.IsClosingTag && string.Equals(tag.Name, DialogRootTagName, StringComparison.OrdinalIgnoreCase))
         {
-            return new CompletionSuggestion(tag.Name, DialogRootInsertText, tag.Description, XamlCompletionKind.TagName, true);
+            return new CompletionSuggestion(tag.Name, DialogRootInsertText, detail, documentation, XamlCompletionKind.TagName, true);
         }
 
-        return new CompletionSuggestion(tag.Name, tag.Name, tag.Description, XamlCompletionKind.TagName);
+        return new CompletionSuggestion(tag.Name, tag.Name, detail, documentation, XamlCompletionKind.TagName);
     }
 
     private static IReadOnlyCollection<CompletionSuggestion> GetAttributeSuggestions(XamlCompletionContext context, MetadataRegistry metadata)
@@ -57,7 +60,12 @@ public sealed class CompletionService : ICompletionService
         return tag.Attributes
             .Where(attribute => StartsWith(attribute.Name, context.Prefix))
             .OrderBy(attribute => attribute.Name, StringComparer.OrdinalIgnoreCase)
-            .Select(attribute => new CompletionSuggestion(attribute.Name, attribute.Name, attribute.Description, XamlCompletionKind.AttributeName))
+            .Select(attribute => new CompletionSuggestion(
+                attribute.Name,
+                attribute.Name,
+                attribute.Description ?? CreateDetail(attribute.Name, XamlCompletionKind.AttributeName, attribute.AllowedValues.Count),
+                attribute.FullDocumentation ?? attribute.Description,
+                XamlCompletionKind.AttributeName))
             .ToArray();
     }
 
@@ -78,9 +86,25 @@ public sealed class CompletionService : ICompletionService
         return attribute.AllowedValues
             .Where(value => StartsWith(value, context.Prefix))
             .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
-            .Select(value => new CompletionSuggestion(value, value, attribute.Description, XamlCompletionKind.AttributeValue))
+            .Select(value => new CompletionSuggestion(
+                value,
+                value,
+                CreateDetail(value, XamlCompletionKind.AttributeValue, 0),
+                attribute.FullDocumentation ?? attribute.Description,
+                XamlCompletionKind.AttributeValue))
             .ToArray();
     }
+
+    private static string CreateDetail(string name, XamlCompletionKind kind, int relatedCount)
+        => kind switch
+        {
+            XamlCompletionKind.TagName when relatedCount > 0 => $"Tag: {name} ({relatedCount} attrs)",
+            XamlCompletionKind.TagName => $"Tag: {name}",
+            XamlCompletionKind.AttributeName when relatedCount > 0 => $"Attribute: {name} ({relatedCount} values)",
+            XamlCompletionKind.AttributeName => $"Attribute: {name}",
+            XamlCompletionKind.AttributeValue => $"Value: {name}",
+            _ => name,
+        };
 
     private static bool StartsWith(string candidate, string prefix)
     {

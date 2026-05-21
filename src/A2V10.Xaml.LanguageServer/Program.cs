@@ -7,7 +7,7 @@ try
     await Console.Error.FlushAsync();
 
     var composition = LanguageServerComposition.CreateDefault();
-    var host = new LspServerHost(composition.CompletionHandler, composition.MetadataProvider, new TextDocumentStore());
+    var host = new LspServerHost(composition.CompletionHandler, composition.HoverHandler, composition.MetadataProvider, new TextDocumentStore());
 
     if (args.Length >= 2 && string.Equals(args[0], "--complete", StringComparison.OrdinalIgnoreCase))
     {

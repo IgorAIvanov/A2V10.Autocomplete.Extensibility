@@ -2,6 +2,7 @@ using System.Reflection;
 using A2V10.Xaml.Core.Abstractions;
 using A2V10.Xaml.Core.Documents;
 using A2V10.Xaml.Reflection;
+using A2V10.Xaml.Reflection.Documentation;
 
 namespace A2V10.Xaml.Tests;
 
@@ -60,6 +61,42 @@ public sealed class ReflectionMetadataProviderTests
         var second = await provider.GetMetadataAsync(documentContext);
 
         Assert.Same(first, second);
+    }
+
+    [Fact]
+    public async Task GetMetadataAsync_UsesDocumentationDescriptions_WhenAvailable()
+    {
+        var documentationProvider = new StubDocumentationProvider(new XamlTagDocumentation(
+            "Grid",
+            "Контейнер для табличного розміщення.",
+            "Контейнер для табличного розміщення. Має рядки та колонки.",
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Rows"] = "Набір рядків контейнера.",
+                ["Col"] = "Номер колонки для елемента."
+            },
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Rows"] = "Набір рядків контейнера. Підтримує декілька значень.",
+                ["Col"] = "Номер колонки для елемента. Відлік з нуля."
+            }));
+
+        var provider = new ReflectionMetadataProvider(
+            new StubAssemblyReferenceResolver(GetAssemblyPath("A2v10.Xaml.dll")),
+            cache: null,
+            documentationProvider: documentationProvider);
+
+        var metadata = await provider.GetMetadataAsync(CreateDocumentContext());
+        var grid = Assert.Single(metadata.Tags.Where(tag => tag.Name == "Grid"));
+        var rows = Assert.Single(grid.Attributes.Where(attribute => attribute.Name == "Rows"));
+        var col = Assert.Single(grid.Attributes.Where(attribute => attribute.Name == "Col"));
+
+        Assert.Equal("Контейнер для табличного розміщення.", grid.Description);
+        Assert.Equal("Контейнер для табличного розміщення. Має рядки та колонки.", grid.FullDocumentation);
+        Assert.Equal("Набір рядків контейнера.", rows.Description);
+        Assert.Equal("Набір рядків контейнера. Підтримує декілька значень.", rows.FullDocumentation);
+        Assert.Equal("Номер колонки для елемента.", col.Description);
+        Assert.Equal("Номер колонки для елемента. Відлік з нуля.", col.FullDocumentation);
     }
 
     [Fact]
@@ -149,5 +186,20 @@ public sealed class ReflectionMetadataProviderTests
     {
         public Task<IReadOnlyCollection<string>> ResolveAsync(XamlDocumentContext documentContext, CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyCollection<string>>([assemblyPath]);
+    }
+
+    private sealed class StubDocumentationProvider(XamlTagDocumentation documentation) : XamlDocumentationProvider
+    {
+        public override bool TryGetTagDocumentation(string tagName, out XamlTagDocumentation? result)
+        {
+            if (string.Equals(tagName, documentation.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                result = documentation;
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
     }
 }

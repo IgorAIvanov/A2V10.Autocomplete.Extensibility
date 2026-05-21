@@ -14,12 +14,14 @@ public sealed class LspServerHost
     private static readonly Uri OpenDocumentUri = new("file:///__open__.xaml");
 
     private readonly CompletionRequestHandler _completionHandler;
+    private readonly HoverRequestHandler _hoverHandler;
     private readonly IMetadataProvider _metadataProvider;
     private readonly TextDocumentStore _documentStore;
 
-    public LspServerHost(CompletionRequestHandler completionHandler, IMetadataProvider metadataProvider, TextDocumentStore documentStore)
+    public LspServerHost(CompletionRequestHandler completionHandler, HoverRequestHandler hoverHandler, IMetadataProvider metadataProvider, TextDocumentStore documentStore)
     {
         _completionHandler = completionHandler;
+        _hoverHandler = hoverHandler;
         _metadataProvider = metadataProvider;
         _documentStore = documentStore;
     }
@@ -77,6 +79,12 @@ public sealed class LspServerHost
                         if (hasId)
                         {
                             await HandleCompletionAsync(root, idProperty, output, cancellationToken);
+                        }
+                        break;
+                    case "textDocument/hover":
+                        if (hasId)
+                        {
+                            await HandleHoverAsync(root, idProperty, output, cancellationToken);
                         }
                         break;
                     case "shutdown":
@@ -190,6 +198,33 @@ public sealed class LspServerHost
         var offset = LspTextPositionConverter.ToOffset(text, line, character);
         var response = await _completionHandler.HandleAsync(new CompletionRequest(filePath, offset, projectPath, text), cancellationToken);
         await WriteCompletionResponseAsync(output, idProperty, response, line, character, cancellationToken);
+    }
+
+    private async Task HandleHoverAsync(JsonElement root, JsonElement idProperty, Stream output, CancellationToken cancellationToken)
+    {
+        var parameters = root.GetProperty("params");
+        var position = parameters.GetProperty("position");
+        var line = position.GetProperty("line").GetInt32();
+        var character = position.GetProperty("character").GetInt32();
+        var uri = parameters.GetProperty("textDocument").GetProperty("uri").GetString();
+        if (string.IsNullOrWhiteSpace(uri))
+        {
+            await WriteNullResultAsync(output, idProperty, cancellationToken);
+            return;
+        }
+
+        var filePath = GetFilePath(uri);
+        var text = GetDocumentText(uri, filePath);
+        if (text is null)
+        {
+            await WriteNullResultAsync(output, idProperty, cancellationToken);
+            return;
+        }
+
+        var projectPath = GetProjectPath(uri, filePath);
+        var offset = LspTextPositionConverter.ToOffset(text, line, character);
+        var response = await _hoverHandler.HandleAsync(new HoverRequest(filePath, offset, projectPath, text), cancellationToken);
+        await WriteHoverResponseAsync(output, idProperty, response, cancellationToken);
     }
 
     private string? GetDocumentText(string documentUri, string filePath)
@@ -311,6 +346,7 @@ public sealed class LspServerHost
             writer.WritePropertyName("capabilities");
             writer.WriteStartObject();
             writer.WriteNumber("textDocumentSync", 1);
+            writer.WriteBoolean("hoverProvider", true);
             writer.WritePropertyName("completionProvider");
             writer.WriteStartObject();
             writer.WriteBoolean("resolveProvider", false);
@@ -383,6 +419,14 @@ public sealed class LspServerHost
                 {
                     writer.WriteString("detail", item.Detail);
                 }
+                if (!string.IsNullOrWhiteSpace(item.Documentation))
+                {
+                    writer.WritePropertyName("documentation");
+                    writer.WriteStartObject();
+                    writer.WriteString("kind", "markdown");
+                    writer.WriteString("value", item.Documentation);
+                    writer.WriteEndObject();
+                }
                 writer.WriteNumber("kind", MapCompletionKind(item));
                 writer.WriteEndObject();
             }
@@ -390,6 +434,46 @@ public sealed class LspServerHost
             writer.WriteEndObject();
             writer.WriteEndObject();
         }, cancellationToken);
+
+    private static Task WriteHoverResponseAsync(
+        Stream output,
+        JsonElement idProperty,
+        HoverResponse? response,
+        CancellationToken cancellationToken)
+        => response is null
+            ? WriteNullResultAsync(output, idProperty, cancellationToken)
+            : WriteMessageAsync(output, writer =>
+            {
+                var start = LspTextPositionConverter.ToLineCharacter(response.SourceText, response.Start);
+                var end = LspTextPositionConverter.ToLineCharacter(response.SourceText, response.End);
+
+                writer.WriteStartObject();
+                writer.WriteString("jsonrpc", "2.0");
+                writer.WritePropertyName("id");
+                idProperty.WriteTo(writer);
+                writer.WritePropertyName("result");
+                writer.WriteStartObject();
+                writer.WritePropertyName("contents");
+                writer.WriteStartObject();
+                writer.WriteString("kind", "markdown");
+                writer.WriteString("value", response.Contents);
+                writer.WriteEndObject();
+                writer.WritePropertyName("range");
+                writer.WriteStartObject();
+                writer.WritePropertyName("start");
+                writer.WriteStartObject();
+                writer.WriteNumber("line", start.line);
+                writer.WriteNumber("character", start.character);
+                writer.WriteEndObject();
+                writer.WritePropertyName("end");
+                writer.WriteStartObject();
+                writer.WriteNumber("line", end.line);
+                writer.WriteNumber("character", end.character);
+                writer.WriteEndObject();
+                writer.WriteEndObject();
+                writer.WriteEndObject();
+                writer.WriteEndObject();
+            }, cancellationToken);
 
     private static Task WriteMethodNotFoundAsync(Stream output, JsonElement idProperty, CancellationToken cancellationToken)
         => WriteMessageAsync(output, writer =>

@@ -1,0 +1,109 @@
+﻿<div>
+	<!--title:Xaml.StackPanel-->
+	<!--keywords:StackPanel-->
+	<div class="title">
+		<h1>
+			Елемент StackPanel
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою контейнер, в якому дочірні елементи
+		вирівнюються в одну лінію, орієнтовану вертикально або горизонтально.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/container">Container</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Orientation</td>
+				<td><a class="code-link" href="/xaml/enums/orientation">Orientation</a></td>
+				<td>
+					Розташування елементів в панелі.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">AlignItems</td>
+				<td><a class="code-link" href="/xaml/enums/alignitems">AlignItems</a></td>
+				<td>
+					Вирівнювання дочірніх елементів.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">JustifyItems</td>
+				<td><a class="code-link" href="/xaml/enums/justifyitems">JustifyItems</a></td>
+				<td>
+					Розподіл дочірніх елементів.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Inline</td>
+				<td>Boolean</td>
+				<td>
+					Рядковий елемент (не блочний).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Gap</td>
+				<td><a class="code-link" href="/xaml/simple/gapsize">GapSize</a></td>
+				<td>Проміжки між елементами по основній та перпендикулярній осі.</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/container">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Роздільники</h3>
+	<p>
+		Дочірні елементи панелі можуть містити роздільник <a class="code-link" href="/xaml/controls/separator">Separator</a>.
+	</p>
+	<p>
+		Вставка роздільника призведе до того, що вміст розделіться на два блоки. 
+		Все, що буде до роздільника, вирівняється по лівій (або верхній) стороні панелі, а
+		те, що після роздільника - по правій (або нижній).
+	</p>
+	Наприклад:
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+<StackPanel Orientation="Horizontal">
+	<Button>Кнопка 1</Button>
+	<Button>Кнопка 2</Button>
+	<Separator />
+	<Button>Кнопка 3</Button>
+</StackPanel>
+</script>
+</pre>
+	</p>
+
+	<p>
+		Результат
+		<div class="xaml-sample" style="width:400px">
+			<div class="stack-panel horizontal">
+				<button class="btn a2-inline">Кнопка 1</button>
+				<button class="btn a2-inline">Кнопка 2</button>
+				<div role="separator" class="divider"></div>
+				<button class="btn a2-inline">Кнопка 3</button>
+			</div>
+		</div>
+	</p>
+
+</div>

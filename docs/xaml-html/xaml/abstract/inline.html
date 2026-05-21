@@ -1,0 +1,71 @@
+﻿<div>
+	<!--title:Xaml.Inline-->
+	<!--keywords:Inline-->
+	<div class="title">
+		<h1>
+			Абстрактний елемент Inline
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі абстрактні елементи</a>
+		</div>
+	</div>
+
+	<p>Являє собою елемент тексту (рядковий елемент)</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th class="fit">Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Block</td>
+				<td>Boolean</td>
+				<td>
+					Відображати елемент як блочний.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Float</td>
+				<td><code>FloatMode</code></td>
+                <td>
+                    Зробити елемент "плаваючим".
+                    <ul class="enum-vals">
+                        <li><span class="prop-name">None</span> - (за замовчуванням) ні.</li>
+                        <li><span class="prop-name">Left</span> - розмістити ліворуч.</li>
+                        <li><span class="prop-name">Right</span> - розмістити праворуч.</li>
+                    </ul>
+                </td>
+			</tr>
+			<tr>
+				<td class="prop-name">Color</td>
+				<td><a class="code-link" href="/xaml/enums/textcolor">TextColor</a></td>
+				<td>
+					Колір тексту.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/uielement">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Особливості</h3>
+	<p>
+		Всі елементи, які в якості вмісту використовують колекцію <code>Inline</code> (
+		наприклад <a class="code-link" href="/xaml/text/text">Text</a> або <a class="code-link" href="/xaml/text/paragraph">Paragraph</a>),
+		можуть містити як дочірні елементи, так і прості текстові рядки. 
+		Текстові рядки просто переносяться в розмітку (жодні додаткові теги не додаються).
+	</p>
+
+</div>

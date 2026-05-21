@@ -42,7 +42,22 @@ public sealed class CompletionServiceTests
 
         Assert.Equal("Dialog", suggestion.Label);
         Assert.Equal("Dialog xmlns=\"clr-namespace:A2v10.Xaml;assembly=A2v10.Xaml\"$0></Dialog>", suggestion.InsertText);
+        Assert.Equal("Dialog root", suggestion.Detail);
+        Assert.Equal("Dialog root full documentation", suggestion.Documentation);
         Assert.True(suggestion.IsSnippet);
+    }
+
+    [Fact]
+    public void GetSuggestions_UsesFullDocumentation_ForAttributes()
+    {
+        var metadata = CreateMetadata();
+
+        var suggestion = Assert.Single(_service.GetSuggestions(
+            new XamlCompletionContext(XamlCompletionKind.AttributeName, "Vis", "Grid", null, 0),
+            metadata));
+
+        Assert.Equal("Visibility short", suggestion.Detail);
+        Assert.Equal("Visibility full documentation", suggestion.Documentation);
     }
 
     [Fact]
@@ -79,9 +94,10 @@ public sealed class CompletionServiceTests
                 "Layout container",
                 [
                     new AttributeDescriptor("Id"),
-                    new AttributeDescriptor("Visibility", allowedValues: ["Visible", "Collapsed"])
-                ]),
-            new TagDescriptor("Dialog", "Dialog root"),
+                    new AttributeDescriptor("Visibility", "Visibility short", ["Visible", "Collapsed"], "Visibility full documentation")
+                ],
+                "Layout container full documentation"),
+            new TagDescriptor("Dialog", "Dialog root", fullDocumentation: "Dialog root full documentation"),
             new TagDescriptor("Group", "Reusable group")
         ]);
     }

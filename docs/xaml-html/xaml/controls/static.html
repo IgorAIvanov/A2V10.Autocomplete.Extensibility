@@ -1,0 +1,91 @@
+﻿<div>
+	<!--title:Xaml.Static-->
+	<!--keywords:Static-->
+	<div class="title">
+		<h1>
+			Елемент Static
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+
+
+	<p>Являє собою статичну мітку, яка виглядає як заборонений текстовий елемент.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/valuedcontrol">ValuedControl</a> :
+	<a class="code-link" href="/xaml/abstract/control">Control</a> :
+	<a class="code-link" href="/xaml/abstract/uielement">UIElement</a> :
+	<a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Align</td>
+				<td><a class="code-link" href="/xaml/enums/textalign">TextAlign</a></td>
+				<td>Вирівнювання тексту.</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>ControlSize</code></td>
+				<td>
+					Розмір елементу. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default, Normal</span> - (за замовчуванням) елемент звичайного розміру.</li>
+						<li><span class="prop-name">Large</span> - збільшений розмір елементу.</li>
+					</ul>
+					(інші значення переліку <code>ControlSize</code> не підтримуються).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MaxChars</td>
+				<td>Int32</td>
+				<td>
+					Максимальна кількість символів. Якщо у значенні більше символів, то текст
+					обрізається, і в кінець додаються три крапки.
+					Повний текст буде виведено як підказку (tooltip).
+					Неможливо використовувати одночасно властивості <code>MaxChars</code> та <code>Tip</code>.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/valuedcontrol">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Приклад</h3>
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+<!-- простий статичний текст -->
+<TextBox Value="Просто текст"
+		 Label="Статический текст" />
+</script>
+</pre>
+	</p>
+	<p>
+		Результат
+		<div class="xaml-sample">
+			<div class="control-group">
+				<label>Статический текст</label>
+				<div class="input-group static">
+					<span>Просто текст</span>
+				</div>
+			</div>
+		</div>
+	</p>
+
+</div>

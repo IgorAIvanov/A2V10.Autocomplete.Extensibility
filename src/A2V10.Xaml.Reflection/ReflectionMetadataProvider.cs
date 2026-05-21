@@ -2,6 +2,7 @@ using System.Reflection;
 using A2V10.Xaml.Core.Abstractions;
 using A2V10.Xaml.Core.Documents;
 using A2V10.Xaml.Core.Models;
+using A2V10.Xaml.Reflection.Documentation;
 using A2V10.Xaml.Reflection.Caching;
 
 namespace A2V10.Xaml.Reflection;
@@ -15,11 +16,16 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
 
     private readonly IAssemblyReferenceResolver _assemblyReferenceResolver;
     private readonly ProjectMetadataCache _cache;
+    private readonly XamlDocumentationProvider _documentationProvider;
 
-    public ReflectionMetadataProvider(IAssemblyReferenceResolver assemblyReferenceResolver, ProjectMetadataCache? cache = null)
+    public ReflectionMetadataProvider(
+        IAssemblyReferenceResolver assemblyReferenceResolver,
+        ProjectMetadataCache? cache = null,
+        XamlDocumentationProvider? documentationProvider = null)
     {
         _assemblyReferenceResolver = assemblyReferenceResolver;
         _cache = cache ?? new ProjectMetadataCache();
+        _documentationProvider = documentationProvider ?? new XamlDocumentationProvider();
     }
 
     public async Task<MetadataRegistry> GetMetadataAsync(XamlDocumentContext documentContext, CancellationToken cancellationToken = default)
@@ -38,17 +44,20 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
             return cachedMetadata;
         }
 
-        return _cache.GetOrAdd(cacheKey, () => CreateMetadataRegistry(assemblyPaths, cancellationToken));
+        return _cache.GetOrAdd(cacheKey, () => CreateMetadataRegistry(assemblyPaths, _documentationProvider, cancellationToken));
     }
 
-    private static MetadataRegistry CreateMetadataRegistry(IReadOnlyCollection<string> assemblyPaths, CancellationToken cancellationToken)
+    private static MetadataRegistry CreateMetadataRegistry(
+        IReadOnlyCollection<string> assemblyPaths,
+        XamlDocumentationProvider documentationProvider,
+        CancellationToken cancellationToken)
     {
         using var metadataLoadContext = new MetadataLoadContext(
             new PathAssemblyResolver(CreateResolverPaths(assemblyPaths)),
             typeof(object).Assembly.GetName().Name);
 
         var tags = assemblyPaths
-            .SelectMany(path => LoadTags(metadataLoadContext, path, cancellationToken))
+            .SelectMany(path => LoadTags(metadataLoadContext, path, documentationProvider, cancellationToken))
             .GroupBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
             .Select(group => group.First())
             .OrderBy(tag => tag.Name, StringComparer.OrdinalIgnoreCase)
@@ -102,7 +111,11 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         return result.ToArray();
     }
 
-    private static IEnumerable<TagDescriptor> LoadTags(MetadataLoadContext metadataLoadContext, string assemblyPath, CancellationToken cancellationToken)
+    private static IEnumerable<TagDescriptor> LoadTags(
+        MetadataLoadContext metadataLoadContext,
+        string assemblyPath,
+        XamlDocumentationProvider documentationProvider,
+        CancellationToken cancellationToken)
     {
         Assembly? assembly = null;
 
@@ -134,11 +147,17 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var attributes = GetAttributes(type)
+                documentationProvider.TryGetTagDocumentation(type.Name, out var tagDocumentation);
+
+                var attributes = GetAttributes(type, tagDocumentation)
                     .OrderBy(static attribute => attribute.Name, StringComparer.OrdinalIgnoreCase)
                     .ToArray();
 
-                return new TagDescriptor(type.Name, type.FullName, attributes);
+                return new TagDescriptor(
+                    type.Name,
+                    tagDocumentation?.Description ?? type.FullName,
+                    attributes,
+                    tagDocumentation?.FullDocumentation ?? tagDocumentation?.Description ?? type.FullName);
             })
             .ToArray();
 
@@ -154,7 +173,7 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
             && type.IsPublic
             && InheritsFrom(type, XamlElementTypeName);
 
-    private static IReadOnlyCollection<AttributeDescriptor> GetAttributes(Type type)
+    private static IReadOnlyCollection<AttributeDescriptor> GetAttributes(Type type, XamlTagDocumentation? tagDocumentation)
     {
         var contentProperties = GetInheritedAttributeNames(type, ContentPropertyAttributeTypeName, "Name");
         var ignoredProperties = GetInheritedAttributeNames(type, IgnoreWritePropertiesAttributeTypeName, "Attrs");
@@ -162,10 +181,13 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         var regularAttributes = type
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)
             .Where(property => IsAttributeProperty(property, contentProperties, ignoredProperties))
-            .Select(CreateAttribute);
+            .Select(property => CreateAttribute(property, tagDocumentation));
 
         var attachedAttributes = GetInheritedAttributeNames(type, AttachedPropertiesAttributeTypeName, "List")
-            .Select(static name => new AttributeDescriptor(name, "Attached property"));
+            .Select(name => new AttributeDescriptor(
+                name,
+                GetAttributeDescription(tagDocumentation, name) ?? "Attached property",
+                fullDocumentation: GetAttributeFullDocumentation(tagDocumentation, name) ?? GetAttributeDescription(tagDocumentation, name) ?? "Attached property"));
 
         return regularAttributes
             .Concat(attachedAttributes)
@@ -202,7 +224,7 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
         return !InheritsFrom(property.PropertyType, typeof(Delegate).FullName!);
     }
 
-    private static AttributeDescriptor CreateAttribute(PropertyInfo property)
+    private static AttributeDescriptor CreateAttribute(PropertyInfo property, XamlTagDocumentation? tagDocumentation)
     {
         var propertyType = GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
 
@@ -212,8 +234,22 @@ public sealed class ReflectionMetadataProvider : IMetadataProvider
                 ? GetEnumNames(propertyType)
                 : Array.Empty<string>();
 
-        return new AttributeDescriptor(property.Name, property.PropertyType.FullName, allowedValues);
+        return new AttributeDescriptor(
+            property.Name,
+            GetAttributeDescription(tagDocumentation, property.Name) ?? property.PropertyType.FullName,
+            allowedValues,
+            GetAttributeFullDocumentation(tagDocumentation, property.Name) ?? GetAttributeDescription(tagDocumentation, property.Name) ?? property.PropertyType.FullName);
     }
+
+    private static string? GetAttributeDescription(XamlTagDocumentation? tagDocumentation, string attributeName)
+        => tagDocumentation is not null && tagDocumentation.TryGetAttributeDescription(attributeName, out var description)
+            ? description
+            : null;
+
+    private static string? GetAttributeFullDocumentation(XamlTagDocumentation? tagDocumentation, string attributeName)
+        => tagDocumentation is not null && tagDocumentation.TryGetAttributeFullDocumentation(attributeName, out var documentation)
+            ? documentation
+            : null;
 
     private static Type? GetUnderlyingType(Type type)
     {

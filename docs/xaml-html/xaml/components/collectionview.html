@@ -1,0 +1,179 @@
+﻿<div>
+	<!--title:Xaml.CollectionView-->
+	<!--keywords:CollectionView-->
+	<div class="title">
+		<h1>
+			Компонент CollectionView
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі компоненти</a>
+		</div>
+	</div>
+
+	<p>
+		Являє собою елемент, який дозволяє працювати з колекціями. Забезпечує 
+		розбиття на сторінки, сортування і фільтрацію.
+		Колекція може оброблятися як на сервері, так і на клієнті.
+	</p>
+
+	<p>
+		Всередині елементу оброблена колекція доступна за посиланням <code>Parent</code>.
+		При серверній обробці потрібна спеціальна <a href="/models/array">підтримка на рівні моделі даних</a>.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+
+	<p>Властивість вмісту: <code>Children</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Children</td>
+				<td class="fit"><a class="code-link" href="/xaml/simple/uielementcollection">UIElementCollection</a></td>
+				<td>Властивість вмісту. Колекція дочірніх елементів.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>
+					Завжди прив'язка - <a class="code-link" href="../bind/bind">Bind</a>. Джерело даних для роботи з коллекцією.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">RunAt</td>
+				<td class="fit"><code>RunMode</code></td>
+				<td>
+					Режим роботи з коллекцією. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Client</span> - (за замовчуванням). Колекція обробляється на клієнті.</li>
+						<li><span class="prop-name">Server</span> - колекція обробляється на сервері.</li>
+						<li>
+							<span class="prop-name">ServerUrl</span> - колекція обробляється на сервері. Додатково в url
+							додаються параметри запиту для обробки колекції.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Filter</td>
+				<td><a class="code-link" href="filterdescription">FilterDescription</a></td>
+				<td>
+					с фільтрів.
+				</td>
+			</tr>
+			<!--
+			<tr>
+				<td class="prop-name">GroupBy</td>
+				<td>GroupDescription</td>
+				<td>
+					Визначення групування.
+				</td>
+			</tr>
+				-->
+			<tr>
+				<td class="prop-name">PageSize</td>
+				<td>Int32?</td>
+				<td>
+					Розмір сторінки. Тільки для роботи на клієнті.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Sort</td>
+				<td><a class="code-link" href="sortdescription">SortDescription</a></td>
+				<td>
+					Визначення сортування. Тільки для роботи на клієнті.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">FilterDelegate</td>
+				<td>String</td>
+				<td>
+					Делегат для фільтрації. Тільки для роботи на клієнті.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/uielementbase">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>
+		Компонент має властивості, до яких можуть звертатися дочірні компоненти. Таке звернення реалізується через префікс
+		<code>Parent</code>.
+	</p>
+
+	<h3>Зовнішні властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>
+					Частина колекції, що відображається. Містить дані вибранної сторінки в правильно відсортованому вигляді.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Filter</td>
+				<td>Object</td>
+				<td>
+					Фильтр колекції. Структура об'єкту відповідає
+					визначенню фільтра <a class="code-link" href="filterdescription">FilterDescription</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Pager</td>
+				<td>Object</td>
+				<td>
+					Джерело для зв'язування з властивістю <code>Source</code> об'єкта
+					<a class="code-link" href="/xaml/controls/pager">Pager</a>.
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p class="tip info">
+		<b>Зверніть увагу!</b> Компонент <code>CollectionView</code> дуже тісно взаємодіє з об'єктами, що підтримують
+		роботу з колекціями (зокрема <a class="code-link" href="/xaml/controls/datagrid">DataGrid</a>).
+		Наприклад, клік по заголовку стовпчика автоматично змінює сортування в батьківському компоненті. Жодних додаткових
+		дій виконувати не потрібно.
+	</p>
+
+
+	<h3>Приклад</h3>
+
+	<p>
+		XAML:
+	</p>
+<pre class="code-highlight xml">
+<script type="text/template">
+<CollectionView ItemsSource="{Bind Documents}" RunAt="ServerUrl">
+	<DataGrid ItemsSource="{Bind Parent.ItemsSource}" Sort="True">
+		<DataGridColumn Content="{Bind Id}" Header="Id" />
+		<DataGridColumn Content="{Bind Name}" Header="Name" />
+	</DataGrid>
+	<Pager Source="{Bind Parent.Pager}"/>
+</CollectionView>
+</script>
+</pre>
+
+</div>

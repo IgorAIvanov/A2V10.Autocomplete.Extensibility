@@ -15,7 +15,7 @@ public sealed class CompletionRequestHandlerTests
         var metadata = new MetadataRegistry([new TagDescriptor("Grid")]);
         var suggestions = new[]
         {
-            new CompletionSuggestion("Grid", "Grid", null, XamlCompletionKind.TagName)
+            new CompletionSuggestion("Grid", "Grid", null, null, XamlCompletionKind.TagName)
         };
 
         var parser = new StubXamlContextParser(expectedContext);

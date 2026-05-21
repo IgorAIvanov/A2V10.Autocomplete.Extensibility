@@ -1,0 +1,75 @@
+﻿<div>
+	<!--title:Xaml.EmptyPanel-->
+	<!--keywords:EmptyPanel-->
+	<div class="title">
+		<h1>
+			Елемент EmptyPanel
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+
+	<p>Являє собою панель з іконкою, яка відображається всередині іншого елементу, якщо той є пустим.</p>
+
+	<p>Зазвичай використовується з властивістю <code>EmptyPanel</code> таблиці <a class="code-link" href="datagrid">DataGrid</a>
+	або переліку <a class="code-link" href="list">List</a>.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/contentcontrol">ContentControl</a> :
+	<a class="code-link" href="/xaml/abstract/control">Control</a> :
+	<a class="code-link" href="/xaml/abstract/uielement">UIElement</a> :
+	<a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<p>Властивість вмісту: <code>Content</code></p>
+
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Icon</td>
+				<td class="fit"><a class="code-link" href="/xaml/enums/icon">Icon</a></td>
+				<td>
+					Іконка панелі.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/contentcontrol">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Приклад</h3>
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+
+<EmptyPanel Content="Відсутні документи, що відповідають умовам фільтру" Icon="File" />
+
+</script>
+</pre>
+	</p>
+	<p>
+		Результат
+		<div class="xaml-sample">
+			<div class="empty-panel">
+				<i class="ico ico-file"></i>
+				<div class="empty-panel-content">
+					<span>Нема документів, що відповідають умовам фільтру</span>
+				</div>
+			</div>
+		</div>
+	</p>
+
+</div>

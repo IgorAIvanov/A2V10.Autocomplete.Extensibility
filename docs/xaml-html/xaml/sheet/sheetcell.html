@@ -1,0 +1,135 @@
+﻿<div>
+	<!--title:Xaml.SheetCell-->
+	<!--keywords:SheetCell-->
+	<div class="title">
+		<h1>
+			Елемент SheetCell
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи таблиць</a>
+		</div>
+	</div>
+
+	<p>Являє собою клітинку таблиці.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/uicontentelement">UIContentElement</a> :
+	<a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">ColSpan</td>
+				<td>Int32?</td>
+				<td>Об'єднання стовпчиків.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">RowSpan</td>
+				<td>Int32?</td>
+				<td>Об'єднання рядків.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Bold</td>
+				<td>Boolean?</td>
+				<td>Напівжирний шрифт. Якщо не вказано, наслідується від батьківського рядку.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Italic</td>
+				<td>Boolean?</td>
+				<td>Курсивний шрифт. Якщо не вказано, наслідується від батьківського рядку.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Underline</td>
+				<td>Boolean</td>
+				<td>Підкреслений текст.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Vertical</td>
+				<td>Boolean</td>
+				<td>
+					Вертикальна орієнтація тексту в клітинці. Автоматичне перенесення не підтримується.
+					Для перенесення на інший рядок додайте в текст "\n".
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Align</td>
+				<td><a class="code-link" href="/xaml/enums/textalign">TextAlign</a></td>
+				<td>
+					Горизонтальне вирівнювання тексту.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">VAlign</td>
+				<td><a class="code-link" href="/xaml/enums/verticalalign">VerticalAlign</a></td>
+				<td>
+					Вертикальне вирівнювання тексту.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Height</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>Висота клітинки.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">GroupIndent</td>
+				<td>Boolean</td>
+				<td>
+					Відступ для ієрархічних елементів. Використовується у випадку, якщо клітинка знаходиться в секції
+					<a href="sheettreesection">SheetTreeSection</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DataType</td>
+				<td><a class="code-link" href="/xaml/enums/datatype">DataType</a></td>
+				<td>
+					Тип даних. Використовується у випадку, якщо в клітинці нема прив`язки, а при експорті потрібно встановити
+					заданий тип даних.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MinWidth</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Мінімальна ширина клітинки.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CssClass</td>
+				<td>String</td>
+				<td>Класи css, які потрібно додати до клітинки.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Fill</td>
+				<td><a class="code-link" href="/xaml/bind/bind">Bind</a></td>
+				<td>
+					Завжди прив'язка. Колір для заливки фону клітинки. Використовується для заливки фоном, колір якого
+					залежить від даних. Використовує css-властивість <code>background-color</code>.
+					Несумісно з властивістю <code>CssStyle</code>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CssStyle</td>
+				<td><a class="code-link" href="/xaml/bind/bind">Bind</a></td>
+				<td>
+					Завжди прив'язка. Правила css для клітинки. Властивість повинна повернути об'єкт. Ім'я властивості - властивість css,
+					значення - відповідне значення. В іменах властивостей можна використовувати camelCase нотацію, наприклад, властивість
+					<code>background-color</code> можна представити як <code>backgroundColor</code>.
+					Несумісно з властивістю <code>Fill</code>.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/uicontentelement">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

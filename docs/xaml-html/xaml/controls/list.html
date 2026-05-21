@@ -1,0 +1,182 @@
+﻿<div>
+	<!--title:Xaml.List-->
+	<!--keywords:List-->
+	<div class="title">
+		<h1>
+			Елемент List
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+	<p>Являє собою перелік елементів (з можливістю виділення). 
+	Вміст зазвичай являє собою перелік елементів <a class="code-link" href="listitem">ListItem</a>.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/control">Control</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<p>Властивість вмісту: <code>Content</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Content</td>
+				<td class="fit"><a class="code-link" href="/xaml/simple/uielementcollection">UIElementCollection</a></td>
+				<td>
+					Властивість вмісту. Вміст переліку
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>
+					Завжди прив'язка - <a class="code-link" href="../bind/bind">Bind</a>. Джерело даних для відображення в переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Style</td>
+				<td><a class="code-link" href="/xaml/enums/liststyle">ListStyle</a></td>
+				<td>
+					Стиль відображення переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Background</td>
+				<td><a class="code-link" href="/xaml/enums/backgroundstyle">BackgroundStyle</a></td>
+				<td>
+					Стиль фону для переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Border</td>
+				<td>Boolean</td>
+				<td>
+					Чи відображати рамку навколо переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">BorderStyle</td>
+				<td class="fit"><a class="code-link" href="/xaml/enums/borderstyle">BorderStyle</a></td>
+				<td>
+					Стиль рамки навколо елементу.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Striped</td>
+				<td>Boolean</td>
+				<td>
+					Розфарбування переліку "у смужку" з виділенням парних і непарних елементів.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Flush</td>
+				<td>Boolean</td>
+				<td>
+					Прибирає лінію після останнього елементу в переліку (тільки для стилю <code>Underlined</code>).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">AutoSelect</td>
+				<td><a class="code-link" href="/xaml/enums/autoselectmode">AutoSelectMode</a></td>
+				<td>
+					Автоматично виділяти елемент після завантаження або оновлення переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Height</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Висота переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MaxHeight</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Максимальна висота переліку. Якщо список вищий, з'являється вертикальний скроллер.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Select</td>
+				<td>Boolean?</td>
+				<td>
+					Чи дозволено виділення елементів в переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Mark</td>
+				<td>Object</td>
+				<td>
+					Тільки прив'язка (<a class="code-link" href="/xaml/bind/bind">Bind</a>). Маркування елементу переліку.
+					Маркер являє собою вертикальну лінію ліворуч від елементу.
+					Подробиці нижче.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">MarkerStyle</td>
+				<td><code>RowMarkerStyle</code></td>
+				<td>
+					Стиль маркування елементу в списку.
+					Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">None</span> - (за замовчуванням) нема маркування.</li>
+						<li><span class="prop-name">Row</span> - фоновий колір.</li>
+						<li><span class="prop-name">Marker</span> - маркер у вигляді смужки ліворуч.</li>
+						<li><span class="prop-name">Both</span> - обидва види маркування.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">EmptyPanel</td>
+				<td><a class="code-link" href="/xaml/abstract/uielement">UIElement</a></td>
+				<td>
+					Панель, що відображається, коли вміст пустий. Зазвичай являє собою об'єкт
+					<a class="code-link" href="emptypanel">EmptyPanel</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DoubleClick</td>
+				<td width="1px"><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>
+					Команда, яку буде виконано при подвійному кліку на елементі переліку.
+					Не забудьте передати в команду аргумент.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/control">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4>Маркування елементів переліку</h4>
+	<p>
+		Вираз прив`язки для властивості <code>Mark</code> повинен повертати текстовий рядок, який являє собою додатковий
+		css-клас, що додається до елементу переліку.
+
+		В темі за замовчуванням підтримуються наступні варіанти маркування елементів переліку:
+		<div style="display:inline-grid;grid-template-columns:auto 90px 90px;align-items:center;grid-gap:4px 8px;">
+			<code>значення Mark</code><code>"Marker"</code><code>"Row"</code>
+			<code>"danger", "red", "error"</code>
+			<span class="markcss_sample" style="border-left-color:#fc7c7c;color:#fc7c7c">#fc7c7c</span>
+			<span class="markcss_sample" style="background-color:#fff5fa;border-width:1px">#fff5fa</span>
+			<code>"warning", "yellow"</code>
+			<span class="markcss_sample" style="border-left-color:#ffd700;color:#ffd700">#ffd700</span>
+			<span class="markcss_sample" style="background-color:#fffff0;border-width:1px">#fffff0</span>
+			<code>"success", "green"</code>
+			<span class="markcss_sample" style="border-left-color:#89e489;color:#89e489">#89e489</span>
+			<span class="markcss_sample" style="background-color:#f5fff5;border-width:1px">#f5fff5</span>
+			<code>"info", "cyan"</code>
+			<span class="markcss_sample" style="border-left-color:#72eaea;color:#72eaea">#72eaea</span>
+			<span class="markcss_sample" style="background-color:#f0ffff;border-width:1px">#f0ffff</span>
+		</div>
+	</p>
+</div>
