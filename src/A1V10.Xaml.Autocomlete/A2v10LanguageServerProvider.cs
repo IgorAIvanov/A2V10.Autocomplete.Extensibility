@@ -27,18 +27,19 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
     [VisualStudioContribution]
     public static DocumentTypeConfiguration XamlDocumentType => new("a2v10-xaml")
     {
-        FileExtensions = [".xaml"],
+        FileExtensions = [".xaml", ".axaml"],
         BaseDocumentType = LanguageServerBaseDocumentType,
     };
 
     public override LanguageServerProviderConfiguration LanguageServerProviderConfiguration => new(
         "A2V10 XAML Language Server", new[]
         {
-             DocumentFilter.FromDocumentType(XamlDocumentType),
+           DocumentFilter.FromDocumentType(XamlDocumentType),
+         //DocumentFilter.FromGlobPattern("**/*.xaml", true),
+        // DocumentFilter.FromDocumentType(LanguageServerBaseDocumentType),
         } 
         );
- // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-
+ 
     public override Task<IDuplexPipe?> CreateServerConnectionAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
