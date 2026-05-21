@@ -108,7 +108,7 @@ public class XamlDocumentationProvider
             System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
         return contentMatch.Success
-            ? NormalizeHtmlText(contentMatch.Groups["content"].Value)
+            ? NormalizeHtmlDocumentation(contentMatch.Groups["content"].Value)
             : ExtractTagDescription(html);
     }
 
@@ -144,8 +144,9 @@ public class XamlDocumentationProvider
             }
 
             var attributeName = NormalizeHtmlText(cellMatches[0].Groups["value"].Value);
-            var fullText = NormalizeHtmlText(cellMatches[2].Groups["value"].Value);
-            var description = ExtractFirstSentence(fullText);
+            var descriptionText = NormalizeHtmlText(cellMatches[2].Groups["value"].Value);
+            var fullText = NormalizeHtmlDocumentation(cellMatches[2].Groups["value"].Value);
+            var description = ExtractFirstSentence(descriptionText);
             if (string.IsNullOrWhiteSpace(attributeName) || string.IsNullOrWhiteSpace(description))
             {
                 continue;
@@ -193,5 +194,83 @@ public class XamlDocumentationProvider
 
         var decoded = System.Net.WebUtility.HtmlDecode(withoutTags);
         return System.Text.RegularExpressions.Regex.Replace(decoded, @"\s+", " ").Trim();
+    }
+
+    private static string NormalizeHtmlDocumentation(string value)
+    {
+        var withoutScripts = System.Text.RegularExpressions.Regex.Replace(
+            value,
+            @"<script\b[^>]*>.*?</script>",
+            string.Empty,
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        var withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withoutScripts,
+            @"<br\s*/?>",
+            "\n",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"<li\b[^>]*>",
+            "\n- ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"</(p|div|ul|ol|table|h\d)\s*>",
+            "\n\n",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"<tr\b[^>]*>",
+            "\n",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"</(tr|li)\s*>",
+            string.Empty,
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        withStructure = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"</(td|th)\s*>",
+            " | ",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        var withoutTags = System.Text.RegularExpressions.Regex.Replace(
+            withStructure,
+            @"<.*?>",
+            string.Empty,
+            System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        var decoded = System.Net.WebUtility.HtmlDecode(withoutTags).Replace("\r\n", "\n").Replace('\r', '\n');
+        var lines = decoded.Split('\n');
+        var result = new List<string>(lines.Length);
+        var previousWasEmpty = false;
+
+        foreach (var line in lines)
+        {
+            var normalizedLine = System.Text.RegularExpressions.Regex.Replace(line, @"\s+", " ").Trim();
+            normalizedLine = normalizedLine.TrimEnd('|').TrimEnd();
+
+            if (normalizedLine.Length == 0)
+            {
+                if (!previousWasEmpty && result.Count > 0)
+                {
+                    result.Add(string.Empty);
+                }
+
+                previousWasEmpty = true;
+                continue;
+            }
+
+            result.Add(normalizedLine);
+            previousWasEmpty = false;
+        }
+
+        return string.Join("\n", result).Trim();
     }
 }

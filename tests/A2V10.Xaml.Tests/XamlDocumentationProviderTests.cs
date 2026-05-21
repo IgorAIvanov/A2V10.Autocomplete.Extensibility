@@ -42,11 +42,13 @@ public sealed class XamlDocumentationProviderTests
         Assert.Equal("TextBox", documentation.Name);
         Assert.Equal("Являє собою поле для введення тексту.", documentation.Description);
         Assert.Contains("Властивості", documentation.FullDocumentation);
+        Assert.Contains("\n\nВластивості\n", documentation.FullDocumentation);
         Assert.True(documentation.TryGetAttributeDescription("Placeholder", out var placeholderDescription));
         Assert.Equal("Підказка для порожнього поля.", placeholderDescription);
         Assert.True(documentation.TryGetAttributeFullDocumentation("Size", out var sizeFullDocumentation));
         Assert.True(documentation.TryGetAttributeDescription("Size", out var sizeDescription));
         Assert.Equal("Розмір елементу.", sizeDescription);
+        Assert.Contains("Розмір елементу.\n\n- Large - збільшений розмір.", sizeFullDocumentation);
         Assert.Contains("Large - збільшений розмір.", sizeFullDocumentation);
     }
 
