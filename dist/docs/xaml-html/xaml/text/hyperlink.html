@@ -1,0 +1,119 @@
+﻿<div>
+	<!--title:Xaml.Hyperlink-->
+	<!--keywords:Hyperlink-->
+	<div class="title">
+		<h1>
+			Елемент Hyperlink
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі текстові елементи</a>
+		</div>
+	</div>
+
+	<p>
+		Являє собою гіперпосилання.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/inline">Inline</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<p>Властивість вмісту: <code>Content</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Content</td>
+				<td>String</td>
+				<td>Текст посилання.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Command</td>
+				<td width="1px"><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>Команда, яку буде виконано при кліку на гіперпосилання.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Icon</td>
+				<td><a class="code-link" href="/xaml/enums/icon">Icon</a></td>
+				<td>Іконка</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>ControlSize</code></td>
+				<td>
+					Розмір посилання. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - За замовчуванням (Normal).</li>
+						<li><span class="prop-name">Small</span> - зменшений.</li>
+						<li><span class="prop-name">Normal</span> - звичайний.</li>
+						<li><span class="prop-name">Large</span> - збільшений.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Style</td>
+				<td><code>HyperlinkStyle</code></td>
+				<td>
+					Стиль посилання. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - За замовчуванням. Звичайне посилання</li>
+						<li>
+							<span class="prop-name">Popover</span> - посилання для спливаючої підказки. Підкреслюється пунктирною лінією.
+							Конкретний вигляд залежить від теми користувацького інтерфейса.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DropDown</td>
+				<td><a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a></td>
+				<td>
+					Спадний елемент, пов'язаний з посиланням.
+					Зазвичай це елемент <a class="code-link" href="/xaml/containers/dropdownmenu">DropDownMenu</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">HideCaret</td>
+				<td>Boolean</td>
+				<td>
+					Приховувати значок розкриття спадного переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Highlight</td>
+				<td>Boolean</td>
+				<td>
+					Виділяти іконку кольором активного гіперпосилання при наведенні курсора миші.
+					Має сенс тільки для деяких іконок (наприклад <code>Send</code>).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">TestId</td>
+				<td>String</td>
+				<td>Ідентифікатор елементу для інструментів тестування.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Hint</td>
+				<td><a class="code-link" href="/xaml/text/popover">Popover</a></td>
+				<td>
+					Спливаюча підказка для посилання. Виводиться у вигляді іконки, вказаної у властивості <code>Icon</code> об'єкта <code>Popover</code>.
+					Якщо іконку не вказано - виводиться <i class="ico po-ico ico-help" style="color:#999"></i>.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/inline">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

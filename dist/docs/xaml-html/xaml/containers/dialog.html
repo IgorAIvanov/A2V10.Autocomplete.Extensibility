@@ -1,0 +1,217 @@
+﻿<div>
+	<!--title:Xaml.Dialog-->
+	<!--keywords:Dialog-->
+	<div class="title">
+		<h1>
+			Елемент Dialog
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою контейнер, який містить інші елементи
+		керування або інші контейнери. Завжди використовується як кореневий елемент розмітки.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/rootcontainer">RootContainer</a> : <a class="code-link" href="/xaml/abstract/container">Container</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<p>Властивість вмісту: <code>Children</code></p>
+
+	<h3>Властивості</h3>
+
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Title</td>
+				<td>String</td>
+				<td>
+					Заголовок вікна діалога.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">HelpUrl</td>
+				<td>String</td>
+				<td>
+					Шлях до сторінки довідки. Якщо вказаний, то в заголовку вікна діалога з'явиться гіперпосилання на сторінку довідки.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">TitleInfo</td>
+				<td class="fit"><a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a></td>
+				<td>
+					Додатковий елемент в заголовку. Виводиться після тексту заголовку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Buttons</td>
+				<td class="fit"><a class="code-link" href="/xaml/simple/uielementcollection">UIElementCollection</a></td>
+				<td>
+					Вміст панелі кнопок. Зазвичай набір кнопок керування.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Taskpad</td>
+				<td class="fit"><a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a></td>
+				<td>
+					Панель задач діалогу. Частіше за все це елемент <a class="code-link" href="/xaml/containers/taskpad">Taskpad</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Width</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Ширина вікна діалогу. За замовчуванням визначається вмістом.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Height</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Висота вікна діалогу. За замовчуванням визначається вмістом.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MinWidth</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Мінімальна ширина вікна.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MinHeight</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Мінімальна висота вікна.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>DialogSize</code></td>
+				<td>
+					Розмір вікна діалогу. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - за замовчуванням.</li>
+						<li><span class="prop-name">Small</span> - маленький.</li>
+						<li><span class="prop-name">Medium</span> - нормальний.</li>
+						<li><span class="prop-name">Large</span> - великий.</li>
+						<li><span class="prop-name">Max</span> - на весь экран. Еквівалентно <code>Maximize="True"</code></li>
+					</ul>
+					Конкретні значення розміру залежать від теми користувацького інтерфейса.
+					Якщо вказано властивість <code>Width</code>, то ця властивість ігнорується.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Placement</td>
+				<td><code>DialogPlacement</code></td>
+				<td>
+					Положення діалогу на екрані. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - за замовчуванням.</li>
+						<li><span class="prop-name">SideBarRight</span> - по правий бік екрану (без заголовка).</li>
+						<li><span class="prop-name">SideBarLeft</span> - по лівий бік екрану (без заголовка).</li>
+						<li><span class="prop-name">FullScreen</span> - розгорнуто на весь екран (без заголовка).</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Maximize</td>
+				<td>Boolean</td>
+				<td>
+					Максимально можливий розмір діалогу. Буде змінюватися в залежності від розмірів вікна браузера.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ButtonOnTop</td>
+				<td>Boolean</td>
+				<td>
+					Розміщувати панель кнопок у верхній частині вікна діалогу.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">ShowWaitCursor</td>
+				<td>Boolean</td>
+				<td>
+					Якщо властивість встановлено в <code>True</code>, то при виконанні запитів до серверу
+					вікно діалогу буде затінятися і буде демонструватися індикатор виконання запиту.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">TestId</td>
+				<td>String</td>
+				<td>
+					Ідентифікатор вікна. Використовується при тестуванні.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">AlwaysOk</td>
+				<td>Boolean</td>
+				<td>
+					Якщо властивість встановлено в <code>True</code>, то при закритті діалогу будь-яким способом буде вважатися, що
+					результат, що повертається, дорівнює <code>true</code>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CanCloseDelegate</td>
+				<td>String</td>
+				<td>Ім'я <a href="/template/delegates">делегата</a>, який буде викликатися при спробі закриття вікна (будь-яким способом).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Background</td>
+				<td><a class="code-link" href="/xaml/enums/backgroundstyle">BackgroundStyle</a></td>
+				<td>Колір фону діалога.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Overflow</td>
+				<td>Boolean</td>
+				<td>
+					Чи може з'являтися скролл-бар в діалозі. Встановіть цю властивість,
+					якщо потрібно, щоб спливаючі вікна (наприклад <code>DatePicker</code>) могли виходити за межі елементу.
+					У цьому випадку потрібно уважно слідкувати за тим, щоб основний вміст не виходив за межі.
+					Скролл-бар відображатися не буде.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">SaveEvent</td>
+				<td>String</td>
+				<td>
+					Ім'я події (event), яка буде відправлено при збереженні об'єкту в діалозі.
+					Подія відправляється елементу, що визвав діалог (caller). Також в <a href="/client/controller">контролері</a> існує метод
+					<code>$emitSaveEvent</code>, який теж посилає цю подію.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/rootcontainer">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Формат делегата CanCloseDelegate</h3>
+	<div class="method">
+		<div class="syntax"><pre class="code-highlight js">canClose(this:IRoot): any | Promise</pre></div>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>this</code> - корінь моделі даних.
+			</li>
+		</ul>
+		<h4>Значення, що повертається:</h4>
+		<ul class="enum-vals">
+			<li><code>Promise</code> - Якщо <code>Promise</code> поверне <code>truthy</code> значення, то діалог закриєся з цим результатом.</li>
+			<li><code>any</code> - Якщо значення <code>truthy</code>, то діалог закриєся з цим результатом.</li>
+		</ul>
+		<p>Примітка: <code>truthy</code> - будь-яке значення, яке вважається вірним.</p>
+	</div>
+
+</div>

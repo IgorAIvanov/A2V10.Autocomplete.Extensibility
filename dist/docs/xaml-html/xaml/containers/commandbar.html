@@ -1,0 +1,70 @@
+﻿<div>
+	<!--title:Xaml.CommandBar-->
+	<!--keywords:CommandBar-->
+	<div class="title">
+		<h1>
+			Елемент CommandBar
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою панель команд. Зазвичай використовується всередині елементів
+		<a class="code-link" href="/xaml/controls/datagrid">DataGrid</a> та
+		<a class="code-link" href="/xaml/controls/listitem">ListItem</a>.
+	</p>
+
+	<p>Особливість цього елементу в тому, що його видимість буде визначатися станом батьківського контейнеру. 
+	Наприклад, якщо розмістити його в стовпчику таблиці і встановити властивість <code>Visibility = "Active"</code>, то 
+	панель команд буде відображатися тільки для активного рядку таблиці.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/container">Container</a> :
+	<a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<h3>Властивості</h3>
+
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="top">
+				<td class="prop-name">Visibility</td>
+				<td class="fit"><code>CommandBarVisibility</code></td>
+				<td>
+					Видимість панелі. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) Видима завжди.</li>
+						<li><span class="prop-name">Active</span> - Видима тільки для активного елементу.</li>
+						<li>
+							<span class="prop-name">Hover</span> - Видима як для активного елементу, так і для елементу,
+							на якому знаходиться курсор миші.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Float</td>
+				<td><code>FloatMode</code></td>
+				<td>
+					Зробити панель "плаваючою".
+					<ul class="enum-vals">
+						<li><span class="prop-name">None</span> - ні (за замовчуванням).</li>
+						<li><span class="prop-name">Left</span> - розмістити ліворуч.</li>
+						<li><span class="prop-name">Right</span> - розмістити праворуч.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/container">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

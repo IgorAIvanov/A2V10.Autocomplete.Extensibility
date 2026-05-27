@@ -1,0 +1,124 @@
+﻿<div>
+	<!--title:Xaml.ComboBox-->
+	<!--keywords:ComboBox-->
+	<div class="title">
+		<h1>
+			Елемент ComboBox
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+	<p>Являє собою спадний список вибору.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/valuedcontrol">ValuedControl</a> :
+	<a class="code-link" href="/xaml/abstract/control">Control</a> :
+	<a class="code-link" href="/xaml/abstract/uielement">UIElement</a> :
+	<a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<p>Властивість вмісту: <code>Children</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Children</td>
+				<td>List&lt;<a class="code-link" href="comboboxitem">ComboBoxItems</a>&gt;</td>
+				<td>
+					Вміст списку. Являє собою список елементів <a class="code-link" href="comboboxitem">ComboBoxItem</a>.
+					Може бути статичним або динамічним.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>
+					Завжди прив'язка - <a class="code-link" href="../bind/bind">Bind</a>. Джерело даних для відображення в списку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DisplayProperty</td>
+				<td>String</td>
+				<td>Ім'я властивості, яке буде відображатися при зв'язуванні елементів списку з об'єктами.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ShowValue</td>
+				<td>Boolean</td>
+				<td>Відображати в списку значення замість вмісту.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Align</td>
+				<td><a class="code-link" href="/xaml/enums/textalign">TextAlign</a></td>
+				<td>Вирівнювання тексту.</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Style</td>
+				<td><code>ComboBoxStyle</code></td>
+				<td>
+					Стиль відображення. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) звичайний список.</li>
+						<li><span class="prop-name">Hyperlink</span> - список у вигляді гіперпосилання</li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>ControlSize</code></td>
+				<td>
+					Розмір елементу. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) список звичайного розміру.</li>
+						<li><span class="prop-name">Large</span> - збільшений розмір переліку.</li>
+					</ul>
+					(всі решта значень переліку <code>ControlSize</code> не підтримуються).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Highlight</td>
+				<td>Boolean</td>
+				<td>
+					Візуально виділяти елемент, якщо його значення непорожнє. Корисно для фільтрів.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/valuedcontrol">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Опис</h3>
+	<p>
+		Вміст спадного списку може задаватися трьома різними способами:
+		<ul class="std">
+			<li>
+				<b>Статичний вміст</b>. У цьому випадку, елемент повинен містити перелік елементів
+				<a class="code-link" href="comboboxitem">ComboBoxItem</a>, для кожного з яких задаються
+				властивості <code>Content</code> і <code>Value</code>. Властивість <code>ItemsSource</code> не зазначається.
+				При обранні елементу властивості <code>Value</code> присвоюється відповідне значення <code>Value</code>
+				з елементу. В списку відображається властивість <code>Content</code> (або <code>Value</code>, якщо встановлено <code>ShowValue = true</code>).
+			</li>
+			<li>
+				<b>Прив'язка до списку об'єктів</b>. У цьому випадку прив'язка <code>ItemsSource</code>
+				пов'язується з масивом об'єктів. Значенням буде обраний об'єкт. В списку відображається властивість зв'язаного об'єкта,
+				задана властивістю <code>DisplayProperty</code>.
+			</li>
+			<li>
+				<b>Прив'язка до списку об'єктів і значень</b>. У цьому випадку прив'язка <code>ItemsSource</code> також пов'язується 
+				з масивом об'єктів. Але для відображення і вибору значень використовується єдиний вкладений елемент 
+				<a class="code-link" href="comboboxitem">ComboBoxItem</a>. Властивості <code>Content</code> і <code>Value</code> 
+				цього елементу зв'язуються з необхідними значеннями елементу масиву.
+			</li>
+		</ul>
+	</p>
+</div>

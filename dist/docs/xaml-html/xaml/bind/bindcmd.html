@@ -1,0 +1,335 @@
+﻿<div>
+	<!--title:BindCmd-->
+	<!--keywords:BindCmd-->
+	<div class="title">
+		<h1>
+			Прив'язка BindCmd
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі прив`язки</a>
+		</div>
+	</div>
+	<p>
+		Являє собою спеціальний об'єкт, що описує команду, яка буде виконана у відповідь
+		на певну дію користувача (наприклад, натискання екранної кнопки).
+		Практично завжди задається як <a href="/xaml/overview/extensions">розширення розмітки</a>.
+	</p>
+	<p>
+		Зверніть увагу, що об`єкт має досить багато властивостей, але більшість з них використовуються
+		тільки для якоїсь конкретної команди.
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Command</td>
+				<td><code>Command</code></td>
+				<td>За замовчуванням. Команда, що виконується. Можливі команди описані нижче.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Argument</td>
+				<td>Object</td>
+				<td>Аргумент команди. Практично завжди прив'язка (<a class="code-link" href="bind">Bind</a>).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Data</td>
+				<td>Object</td>
+				<td>Додаткові дані для команди. Практично завжди прив'язка (<a class="code-link" href="bind">Bind</a>).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Url</td>
+				<td>String</td>
+				<td>Url для зовнішньї команди.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CommandName</td>
+				<td>String</td>
+				<td>Тільки для команди <b>Execute</b>. Ім'я команди в шаблоні (<a class="code-link" href="/template/commands">template.commands</a>).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">SaveRequired</td>
+				<td>Boolean</td>
+				<td>Зберігати модель перед виконанням команди.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ValidRequired</td>
+				<td>Boolean</td>
+				<td>Для виконання команди потрібно, щоб модель була у валідному стані.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CheckReadOnly</td>
+				<td>Boolean</td>
+				<td>Перевіряти позначку <b>ReadOnly</b> моделі при виконанні команди.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Confirm</td>
+				<td><a class="code-link" href="/xaml/components/confirm">Confirm</a></td>
+				<td>Запитувати у користувача підтвердження перед виконанням команди.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">NewWindow</td>
+				<td>Boolean</td>
+				<td>Відкривати у новому вікні.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">UpdateAfter</td>
+				<td>Object</td>
+				<td>Завжди прив'язка. Об'єкт або масив, який потрібно оновити після виконання якоїсь дії.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ReloadAfter</td>
+				<td>Boolean</td>
+				<td>Оновити модель після виконання команди.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Export</td>
+				<td>Boolean</td>
+				<td>Чи виконувати експорт замість відображення. Не сумісна з <code>Print</code>.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Print</td>
+				<td>Boolean</td>
+				<td>Чи виконувати друк замість відображення.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">FileAction</td>
+				<td>Enum</td>
+				<td>Дія для команди <code>File</code>.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Action</td>
+				<td>Enum</td>
+				<td>Дія для команди <code>Dialog</code>.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Команди</h3>
+
+	<div class="method">
+		<div class="command"><b>Open</b>, <b>OpenSelected</b> - відкрити форму</div>
+		<p>
+			Виконує перехід на заданий Url із заданим аргументом.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li><code>Url</code> - Шлях до форми. Обов'язково</li>
+			<li>
+				<code>Argument</code> - Аргумент команди. Обов'язково. Для команди <code>Open</code>
+				задає елемент для форми. Для команди <code>OpenSelected</code> це колекція, обраний єлемент якої буде передано до форми.
+			</li>
+			<li><code>NewWindow</code> - Відкривати в новому вікні.</li>
+			<li>
+				<code>UpdateAfter</code> - Прив'язка до елементу, який можливо буде оновлюватися при виконанні якихось дій. Має
+				сенс тільки якщо форма відкривається у новому вікні.
+			</li>
+		</ul>
+	</div>
+
+	<div class="method">
+		<div class="command"><b>Clear</b> - очистить</div>
+		<p>
+			Очищує об`єкт агрумента.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>Argument</code> - Прив'язка до масиву або об'єкту, який потрібно очистити. Фактично команда просто викликає метод
+				<a href="/client/elemprops" class="code-link">$empty</a> зв'язаного об'єкта або масива.
+			</li>
+		</ul>
+		<p>
+			Зверніть увагу, що елемент керування, пов'язаний з цією командою, не буде виводитися, якщо об`єкт або масив вже пусті.
+			Додаткова прив'язка властивості <code>If</code> не потрібна.
+		</p>
+	</div>
+
+	<div class="method">
+		<div class="command"><b>Execute</b>, <b>ExecuteSelected</b> - виконати</div>
+		<p>
+			Виконує команду шаблона.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>CommandName</code> - Ім'я команди в розділі 
+				<a href="/template/commands" class="code-link">commands</a> шаблону.
+			</li>
+			<li>
+				<code>Argument</code> - Прив'язка аргумента команди.
+				Для команди <code>ExecuteSelected</code> це колекція, виділений єлемент якої буде аргументом команди.
+				Якщо виділених элементів нема - команду буде заборонено.
+			</li>
+		</ul>
+		<p>
+			Існує скорочення <a href="/xaml/bind/bindcmdexec" class="code-link">BindCmdExec</a> аргументом якого є ім'я команди.
+		</p>
+	</div>
+
+	<div class="method">
+		<div class="command"><b>Save</b> - зберегти</div>
+		<p>
+			Зберегає поточну модель. Команда не має аргументів.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>SaveAndClose</b> - зберегти та закрити</div>
+		<p>
+			Зберегає поточну модель та закриває поточну форму або діалог. Команда не має аргументів.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>Close</b> - закрити</div>
+		<p>
+			Закриває поточну форму або діалог. Команда не має аргументів.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>CloseOk</b> - закрити</div>
+		<p>
+			Тільки для діалогів. Закриває поточний діалог з відповіддю <code>true</code>. Команда не має аргументів.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>Reload</b>, <b>Refresh</b> - оновити</div>
+		<p>
+			Оновлює поточну модель або її частину. Якщо аргумент заданий, то оновлюється тільки частина моделі.
+			Оновлення частини моделі використовується для <a href="/models/array">"лінивих масивів"</a>.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li><code>Argument</code> - Прив'язка до масиву, який потрібно оновити. Не обов'язково.</li>
+		</ul>
+	</div>
+	<div class="method">
+		<div class="command"><b>Requery</b> - оновити</div>
+		<p>
+			Перезавантажує форму повністю з сервера (включаючи перегенерацію розмітки). Команда не має аргументів.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>Print</b> - надрукувати</div>
+		<p>
+			Друк поточної сторінки. Команда не має аргументів. Зверніть увагу, що фактично
+			друкується поточне зображення сторінки. Деякі елементи (наприклад <a class="code-link" href="/xaml/containers/taskpad">Taskpad</a>) на друк не виводяться.
+			Більш тонко керувати видимістю елементів при друку можна за допомогою властивості <code>Print</code> об'єкта
+			<a class="code-link" href="/xaml/abstract/uielement">UIElement</a>.
+		</p>
+	</div>
+	<div class="method">
+		<div class="command"><b>Dialog</b> - діалог</div>
+		<p>
+			Відображає діалог і виконує вказану дію.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>Action</code> - дія. Можливі значення:
+				<ul class="enum-vals">
+					<li>
+						<span class="prop-name">Edit</span> - редагувати елемент, вказаний аргументом.
+						Після закриття діалога елемент буде оновлений.
+					</li>
+					<li>
+						<span class="prop-name">EditSelected</span> - редагувати обраний елемент колекції.
+						Колекція задається аргументом команди. Після закриття діалога виділений елемент буде оновлений.
+					</li>
+					<li><span class="prop-name">Show</span> - показати елемент, заданий аргументом.</li>
+					<li>
+						<span class="prop-name">ShowSelected</span> - показати обраний елемент колекції.
+						Колекція задається аргументом команди.
+					</li>
+					<li><span class="prop-name">Browse</span> - обрати елемент, заданий аргументом. Елемент замінюється обраним в діалозі.</li>
+					<li><span class="prop-name">Append</span> - створити новий елемент і додати його в колекцію. Колекція задається аргументом.</li>
+					<li><span class="prop-name">New</span> - створити новий елемент.</li>
+					<li><span class="prop-name">Copy</span> - створити копію заданного елементу. Елемент задається аргументом.</li>
+				</ul>
+			</li>
+			<li><code>Argument</code> - Прив'язка до елементу або колекції.</li>
+			<li><code>Data</code> - Додаткові дані для виклику діалога. Будуть параметрами процедури завантаження моделі діалога.</li>
+			<li>
+				<code>URL</code> - URL на діалог з розділу <a class="code-link" href="/app/dialogs">dialogs</a>
+				файлу опису моделі <code>model.json</code>.
+			</li>
+			<li>
+				<code>SaveRequired</code>, <code>ValidRequired</code>, <code>ReloadAfter</code> -
+				додаткові умови команди.
+			</li>
+		</ul>
+	</div>
+	<div class="method">
+		<div class="command"><b>File</b> - робота з файлами (бінарними об'єктами)</div>
+		<p>
+			Виконує відображення, завантаження або друк вкладення (бінарного об'єкта). Це може
+			ути зображення, файл тощо
+			<a href="/models/blob">Детальніше про роботу з бінарними об'єктами.</a>
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>FileAction</code> - дію з файлом. Можливі значення:
+				<ul class="enum-vals">
+					<li><span class="prop-name">Show</span> - Показать дані на сторінці.</li>
+					<li><span class="prop-name">Download</span> - завантажити дані як файл.</li>
+					<li><span class="prop-name">Print</span> - Печать даних файла.</li>
+				</ul>
+			</li>
+			<li><code>Argument</code> - Прив'язка до властивості, яка буде задавати ідентифікатор бінарного об'єкта.</li>
+			<li>
+				<code>URL</code> - URL на дію з розділу <a class="code-link" href="/app/files">files</a>
+				файлу опису моделі <code>model.json</code>.
+			</li>
+		</ul>
+	</div>
+	<div class="method">
+		<a href="#download"></a>
+		<div class="command"><b>Download</b> - завантажити</div>
+		<p>
+			Дозволяє користувачу завантажити статичний файл. Статичні файли,
+			пов'язані з програмою мають бути розміщені в спеціальній папці <a class="code-link" href="/app/folders/files">_files</a>.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>Url</code> - шлях до статичного файлу. Шлях зазначається
+				відносно папки <b>_files</b>.
+			</li>
+		</ul>
+	</div>
+	<div class="method">
+		<a href="#report"></a>
+		<div class="command"><b>Report</b> - звіт</div>
+		<p>
+			Дозволяє користувачу виконати дії зі звітом. Звіти
+			мають бути розміщені в розділі <a class="code-link" href="/app/reports">reports</a>.
+		</p>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>Report</code> - назва <a href="/app/reports">звіту</a>.
+			</li>
+			<li>
+				<code>Url</code> - шлях до <a href="/app/reports">кінцевої точки звіту</a>.
+			</li>
+			<li>
+				<code>Export</code> - завантажити звіт.
+			</li>
+			<li>
+				<code>Print</code> - надрукувати звіт.
+			</li>
+			<li>
+				<code>Format</code> - формат завантаження для звіту. Доступні значення залежать від виду звіту.
+			</li>
+			<li><code>Argument</code> - Аргумент для звіту. З аргументу буде отримано ідентіфікатор звіту.</li>
+			<li><code>Data</code> - Додаткові дані для звіту. Будуть параметрами процедури завантаження моделі звіту.</li>
+		</ul>
+	</div>
+</div>

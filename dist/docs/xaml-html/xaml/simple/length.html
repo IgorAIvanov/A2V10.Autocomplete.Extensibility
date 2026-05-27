@@ -1,0 +1,118 @@
+﻿<div>
+	<!--title:Xaml.Length-->
+	<!--keywords:Length-->
+	<div class="title">
+		<h1>
+			Елемент Length
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі прості елементи</a>
+		</div>
+	</div>
+	<p>
+		Задає довжину. Задається у вигляді числа з необов'язковім вказанням одиниць вимірювання або у вигляді кількох буквальних значень.
+		Одиниці вимірювання відповідають одиницям в css.
+	</p>
+
+	<h3>Одиниці вимірювання</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Одиниця</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">%</td>
+				<td>Проценти.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">px</td>
+				<td>Піксели (1px = 1/96in). Це значення за замовчуванням, використовується якщо одиниця вимірювання не задана.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">mm</td>
+				<td>Міліметри.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">cm</td>
+				<td>Сантиметри.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">pt</td>
+				<td>Пункти (1pt = 1/72in).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">in</td>
+				<td>Дюйми (1in = 2.54cm).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ch</td>
+				<td>Символи (використовується ширина символа "0").</td>
+			</tr>
+			<tr>
+				<td class="prop-name">em</td>
+				<td>Ширина символа "m" поточного шрифта.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">rem</td>
+				<td>Ширина символа "m" шрифта кореневого елементу (того, який заданий в тегу &lt;html&gt;).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ex</td>
+				<td>Висота x-height поточного шрифта.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">vh</td>
+				<td>1% від висоти вікна (viewport).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">vw</td>
+				<td>1% від ширини вікна (viewport).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">vmin</td>
+				<td>Меньше з <b>vh</b>, <b>vw</b>.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">vmax</td>
+				<td>Більше з <b>vh</b>, <b>vw</b>.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Буквальні значення</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Значення</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Auto</td>
+				<td>Автоматично. Відповідає css значению <b>auto</b>.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Fit</td>
+				<td>Мінімальне значення вмісту. Відповідає css значенню <b>fit-content</b>.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Приклад</h3>
+
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+<Block Width="25%" Height="50rem">
+	...
+</Block>
+</script>
+</pre>
+	</p>
+
+</div>

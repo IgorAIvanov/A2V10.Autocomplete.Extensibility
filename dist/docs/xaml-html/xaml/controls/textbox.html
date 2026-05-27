@@ -1,0 +1,182 @@
+﻿<div>
+	<!--title:Xaml.TextBox-->
+	<!--keywords:TextBox-->
+	<div class="title">
+		<h1>
+			Елемент TextBox
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+	<p>Являє собою поле для введення тексту.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/valuedcontrol">ValuedControl</a> : <a class="code-link" href="/xaml/abstract/control">Control</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Multiline</td>
+				<td>Boolean</td>
+				<td>
+					Елемент з кількома рядками.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">AutoSize</td>
+				<td>Boolean</td>
+				<td>
+					Автоматично встановлювати висоту елементу в залежності від вмісту. Тільки для елементів з кількома рядками.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Rows</td>
+				<td>Int32?</td>
+				<td>
+					Кількість рядків. Тільки для елементів з кількома рядками.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Align</td>
+				<td><a class="code-link" href="/xaml/enums/textalign">TextAlign</a></td>
+				<td>Вирівнювання тексту</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Password</td>
+				<td>Boolean</td>
+				<td>
+					Поле введення пароля. Замість текста відображаються заповнювачі. Копіювання тексту з поля неможливе.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Number</td>
+				<td>Boolean</td>
+				<td>
+					В поле дозволено вводити тільки цифри і знак мінус ('-').
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Placeholder</td>
+				<td>String</td>
+				<td>
+					Підказка. Відображається в пустому полі введення. Зникає при отриманні полем фокусу введення.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">SpellCheck</td>
+				<td>Boolean?</td>
+				<td>
+					Чи перевіряти орфографічні помилки. За замовчуванням - залежить від налаштувань браузера.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">UpdateTrigger</td>
+				<td><a class="code-link" href="/xaml/enums/updatetrigger">UpdateTrigger</a></td>
+				<td>Спосіб оновлення значення моделі даних, зв'язаних з цим елементом.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">EnterCommand</td>
+				<td><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>Команда, яка буде виконана при натисканні <kbd>Enter</kbd> (для поля з багатьма рядками - <kbd>Ctrl+Enter</kbd>).</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MaxHeight</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>
+					Максимальна висота елементу. Має сенс тільки для елементів з кількома рядками, у яких встановлено властивість <code>AutoSize</code>.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>ControlSize</code></td>
+				<td>
+					Розмір елементу. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default, Normal</span> - (за замовчуванням) елемент звичайного розміру.</li>
+						<li><span class="prop-name">Large</span> - збільшений розмір елементу.</li>
+					</ul>
+					(інші значення переліку <code>ControlSize</code> не підтримуються).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ShowClear</td>
+				<td>Boolean</td>
+				<td>
+					Показувати кнопку очистки вмісту. Натискання на цю кнопку очищує пов'язане значення моделі.
+					Якщо значення пусте - кнопку буде заборонено.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ShowFilter</td>
+				<td>Boolean</td>
+				<td>
+					Використовується разом з елементом
+					<a class="code-link" href="/xaml/components/collectionview">CollectionView</a>.
+					Показувати кнопку фільтру. Натискання на цю кнопку перезавантажує модель
+					з новим значенням фільтру.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Accel</td>
+				<td><a class="code-link" href="/xaml/simple/accel">Accel</a></td>
+				<td>
+					Акселератор (гаряча клавіша). При натисканні цієї клавіші фокус буде встановлено на цей елемент.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Highlight</td>
+				<td>Boolean</td>
+				<td>
+					Візуально виділяти елемент, якщо його значення непорожнє. Корисно для фільтрів.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/valuedcontrol">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Приклад</h3>
+	<p>
+		XAML
+<pre class="code-highlight xml">
+<script type="text/template">
+<!-- просте поле введення -->
+<TextBox Placeholder="введіть текст сюди"
+		Label="Просте поле" />
+
+<!-- поле введення з багатьма рядками -->
+<TextBox Multiline="True" Rows="3"
+		Label="Поле введення з багатьма рядками" />
+</script>
+</pre>
+	</p>
+	<p>
+		Результат
+		<div class="xaml-sample">
+			<div class="control-group">
+				<label>Просте поле</label>
+				<div class="input-group">
+					<input placeholder="введіть текст сюди" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label>Поле введення з багатьма рядками</label>
+				<div class="input-group">
+					<textarea rows="3"></textarea>
+				</div>
+			</div>
+		</div>
+	</p>
+</div>

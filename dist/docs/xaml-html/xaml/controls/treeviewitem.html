@@ -1,0 +1,74 @@
+﻿<div>
+	<!--title:Xaml.TreeViewItem-->
+	<!--keywords:TreeViewItem-->
+	<div class="title">
+		<h1>
+			Елемент TreeViewItem
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+	<p>
+		Являє собою один елемент ієрархічного переліку (дерева) <a class="code-link" href="treeview">TreeView</a>.
+	</p>
+
+	<p>Зверніть увагу, що елемент використовується для роботи з <a href="/models/tree">ієрархічними джерелами даних</a>.</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<p>Властивість вмісту: <code>Label</code></p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>Завжди прив'язка (<a class="code-link" href="/xaml/bind/bind">Bind</a>). Джерело даних для отримання дочірніх елементів.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Label</td>
+				<td>String</td>
+				<td>
+					Властивість вмісту. Текст елементу.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Icon</td>
+				<td><a class="code-link" href="/xaml/enums/icon">Icon</a></td>
+				<td>
+					Іконка, яка буде відображатися перед вмістом. Якщо іконка не визначена, то буде відображатися 
+					іконка, яка визначена у властивостях <code>IconFolder</code> (для папки) або <code>IconItem</code> (для елементу) 
+					батьківського елементу <a href="treeview">TreeView</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name fit">IsFolder</td>
+				<td>Boolean?</td>
+				<td>Завжди прив'язка. Чи є елемент папкою. Використовується для роботи з динамічно заповнюваними деревами.</td>
+			</tr>
+			<tr>
+				<td class="prop-name fit">IsGroup</td>
+				<td>Boolean?</td>
+				<td>Завжди прив'язка. Чи є елемент групою. Використовується для роботи з динамічно заповнюваними деревами.</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/uielement">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>

@@ -1,0 +1,51 @@
+﻿<div>
+	<!--title:Xaml.SheetAutoGenerate-->
+	<!--keywords:SheetAutoGenerate-->
+	<div class="title">
+		<h1>
+			Елемент SheetAutoGenerate
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи таблиць</a>
+		</div>
+	</div>
+	<p>
+		Об'єкт, який описує правила генерації таблиці з даних.
+	</p>
+
+	<p>
+		Конвертер: підтримується перетворення з рядку тексту в об'єкт, де заданий рядок є властивістю
+		<code>PropertyName</code>, а <code>Mode = FromDataModel</code>.
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="top">
+				<td class="prop-name">Mode</td>
+				<td class="fit"><code>SheetAutoGenerateMode</code></td>
+				<td>
+					Режим автогенерації. Можливі значення:
+					<ul class="enum-vals">
+						<li>
+							<span class="prop-name">FromDataModel</span> - за замовчуванням. З моделі даних. Повинно бути
+							задано властивість <code>PropertyName</code>.
+						</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">PropertyName</td>
+				<td>String</td>
+				<td>Ім'я властивості моделі, яке повинно представляти колекцію для генерації таблиці.</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

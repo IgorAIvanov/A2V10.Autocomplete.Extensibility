@@ -1,0 +1,85 @@
+﻿<div>
+	<!--title:Xaml.FullHeightPanel-->
+	<!--keywords:FullHeightPanel;-->
+	<div class="title">
+		<h1>
+			Елемент FullHeightPanel
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою панель, висота якої завжди дорівнює 100%.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/container">Container</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">MinWidth</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>Мінімальна ширина панелі</td>
+			</tr>
+		</tbody>
+		<tr>
+			<td colspan="3">
+				<a href="/xaml/abstract/container">Властивості базового елементу</a>
+			</td>
+		</tr>
+	</table>
+
+
+	<h3>Приєднані властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="top">
+				<td class="prop-name">FullHeightPanel.Fill</td>
+				<td>Boolean</td>
+				<td>
+					Визначає дочірній елемент, висота якого буде змінюватися при зміні висоти батьківського контейнера.
+					<br /> Тільки один дочірній елемент може мати властивість <code>Fill = True</code>.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">FullHeightPanel.Skip</td>
+				<td>Boolean</td>
+				<td>
+					Пропускати цей елемент при створенні контейнера. Ця властивість використовується в тому випадку, коли потрібно, щоб в одному
+					блоці контейнера виводився один з кількох елементів (наприклад за допомогою прив`язки <code>If</code>).
+					<br />Встановіть <code>Skip = True</code> для всех елементів в блоці, крім одного (будь-якого).
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p class="tip warning">
+		<b>Зверніть увагу!</b> Для реалізації панелі використовується сітка (css grid). З цієї причини при приховувані елементів за допомогою
+		прив`язки <code>If</code>, вибір елементу для заповнення буде невірним.
+		<br />
+		Це відбувається тому, що адресація панелей відбувається по порядковому номеру.
+		<br />
+		Якщо потрібно використовувати прив'язку <b>If</b>, то помістіть елемент, що приховується, в
+		додатковий блок <a href="/xaml/containers/block" class="code-link">Block</a> або використовуйте додану властивість
+		<code>FullHeightPanel.Skip</code>.
+	</p>
+
+</div>

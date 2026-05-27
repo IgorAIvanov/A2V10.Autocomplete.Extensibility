@@ -1,0 +1,55 @@
+﻿<div>
+	<!--title:Xaml.Wizard-->
+	<!--keywords:Wizard-->
+	<div class="title">
+		<h1>
+			Елемент Wizard
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою майстер, що складається з кількох окремих сторінок 
+		<a class="code-link" href="/xaml/containers/wizardpage">WiazrdPage</a>
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/containers/dialog">Dialog</a> : <a class="code-link" href="/xaml/abstract/rootcontainer">RootContainer</a> : <a class="code-link" href="/xaml/abstract/container">Container</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<p>Властивість вмісту: <code>Children</code>.
+	Завжди буде колекцією елементів <a class="code-link" href="/xaml/containers/wizardpage">WiazrdPage</a>.
+	</p>
+
+	<h3>Властивості</h3>
+
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">FinishCommand</td>
+				<td><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>Команда, яка буде виконана при натисканні кнопки <code>Finish</code>.</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/containers/dialog">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Особливості</h3>
+	<p>
+		Кнопки навигації (кнопки <b>Назад</b>, <b>Далі</b>, <b>Готово</b> і <b>Скасувати</b>) 
+		відображаються і управляються автоматично.
+		При натисканні кнопки <b>Готово</b> буде виконана команда, задана властивістю <code>FinishCommand</code>.
+	</p>
+</div>

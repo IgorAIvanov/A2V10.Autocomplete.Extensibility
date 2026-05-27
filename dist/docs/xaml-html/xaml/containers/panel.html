@@ -1,0 +1,172 @@
+﻿<div xmlns:v-bind="v-bind">
+	<!--title:Xaml.Panel-->
+	<!--keywords:Panel-->
+	<div class="title">
+		<h1>
+			Елемент Panel
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі контейнери</a>
+		</div>
+	</div>
+	<p>
+		Являє собою панель.
+	</p>
+
+	<p>
+		Наслідує: <a class="code-link" href="/xaml/abstract/container">Container</a> : <a class="code-link" href="/xaml/abstract/uielement">UIElement</a> : <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+	</p>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="top">
+				<td class="prop-name">Style</td>
+				<td>PaneStyle</td>
+				<td>
+					Стиль відображення панелі. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - Звичайна панель.</li>
+						<li><span class="prop-name">Danger, Error, Red</span> - помилка (червона).</li>
+						<li><span class="prop-name">Warning, Yellow</span> - попередження (жовта).</li>
+						<li><span class="prop-name">Success, Green</span> - успіх (зелена).</li>
+						<li><span class="prop-name">Info, Cyan</span> - інформація (блакитна).</li>
+						<li><span class="prop-name">Cut</span> - Панель, що згортається, з заголовком у вигляді посилання.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Compact</td>
+				<td>Boolean</td>
+				<td>
+					Компактний стиль відображення панелі.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Collapsible</td>
+				<td>Boolean</td>
+				<td>
+					Чи можна згортати панель.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Collapsed</td>
+				<td>Boolean?</td>
+				<td>
+					Чи згорнута панель у вихідному стані.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Header</td>
+				<td>Object</td>
+				<td>
+					Заголовок. Може бути рядком, прив'язкою (<a class="code-link" href="/xaml/bind/bind">Bind</a>)
+					або елементом <a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Icon</td>
+				<td><a class="code-link" href="/xaml/enums/icon">Icon</a></td>
+				<td>
+					Іконка. Відображається в лівій частині заголовку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Hint</td>
+				<td><a class="code-link" href="/xaml/text/popover">Popover</a></td>
+				<td>Спливаюча підказка для панелі. Виводиться у вигляді <i class="ico po-ico ico-help" style="color:#999"></i> після текста заголовку.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Height</td>
+				<td><a class="code-link" href="/xaml/simple/length">Length</a></td>
+				<td>Висота панелі.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DropShadow</td>
+				<td><a class="code-link" href="/xaml/enums/shadowstyle">ShadowStyle</a></td>
+				<td>Вид тіні.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Background</td>
+				<td><a class="code-link" href="/xaml/enums/backgroundstyle">BackgroundStyle</a></td>
+				<td>Колір фону.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Gap</td>
+				<td><a class="code-link" href="/xaml/simple/gapsize">GapSize</a></td>
+				<td>Проміжки між елементами по основній та перпендикулярній осі.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">TestId</td>
+				<td>String</td>
+				<td>Ідентифікатор елементу для інструментів тестування.</td>
+			</tr>
+		</tbody>
+		<tr>
+			<td colspan="3">
+				<a href="/xaml/abstract/container">Властивості базового елементу</a>
+			</td>
+		</tr>
+	</table>
+
+
+	<h3>Приклади</h3>
+
+	<div class="panel-samlpe" id="panel-sample">
+		<div class="panel drop-shadow shadow1 compact">
+			<div class="panel-header">Default</div>
+			<div class="panel-content" style="padding:10px">
+				Default style
+			</div>
+		</div>
+		<a2-panel class="panel-red drop-shadow shadow1 compact" v-bind:collapsible="true" style="width:125px">
+			<div class="panel-header-slot" slot="header">Red</div>
+			<div class="panel-content" style="padding:10px">
+				Red, Danger, Error
+			</div>
+		</a2-panel>
+		<div class="panel panel-yellow drop-shadow shadow1 compact">
+			<div class="panel-header">Yellow</div>
+			<div class="panel-content" style="padding:10px">
+				Warning, Yellow
+			</div>
+		</div>
+		<div class="panel panel-green drop-shadow shadow1 compact">
+			<div class="panel-header">Green</div>
+			<div class="panel-content" style="padding:10px">
+				Success, Green
+			</div>
+		</div>
+		<div class="panel panel-cyan drop-shadow shadow1 compact">
+			<div class="panel-header">Cyan</div>
+			<div class="panel-content" style="padding:10px">
+				Info, Cyan
+			</div>
+		</div>
+		<a2-panel class="panel-cut" v-bind:collapsible="true">
+			<div class="panel-header-slot" slot="header">Cut</div>
+			<div class="panel-content">
+				Стиль "Cut". Вміст панелі
+			</div>
+		</a2-panel>
+	</div>
+
+	<script type="text/javascript">
+		(function () {
+			if (!window.Vue) return;
+			var vm = new Vue({
+				el: "#panel-sample",
+				data: {
+				}
+			});
+		})();
+	</script>
+
+</div>

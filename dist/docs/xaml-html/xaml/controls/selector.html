@@ -1,0 +1,264 @@
+﻿<div>
+	<!--title:Xaml.Selector-->
+	<!--keywords:Selector-->
+	<div class="title">
+		<h1>
+			Елемент Selector
+		</h1>
+		<div class="breadcrumb">
+			<a href="index">Всі елементи керування</a>
+		</div>
+	</div>
+
+	<p>Являє собою універсальний селектор.</p>
+
+	Наслідує: <a class="code-link" href="/xaml/abstract/valuedcontrol">ValuedControl</a> :
+	<a class="code-link" href="/xaml/abstract/control">Control</a> :
+	<a class="code-link" href="/xaml/abstract/uielement">UIElement</a> :
+	<a class="code-link" href="/xaml/abstract/uielementbase">UIElementBase</a>
+
+	<h3>Властивості</h3>
+	<table class="table-props">
+		<thead>
+			<tr>
+				<th>Ім'я</th>
+				<th>Тип</th>
+				<th>Опис</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="prop-name">Delegate</td>
+				<td>String</td>
+				<td>Ім'я <a href="/template/delegates">делегата</a>, який буде викликатися при введенні тексту в поле селектора.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">SetDelegate</td>
+				<td>String</td>
+				<td>
+					Ім'я <a href="/template/delegates">делегата</a>, який буде викликатися при виборі елементу в спадної панелі.
+					Якщо вказаний цей делегат, то жодних присвоювань зв'язаного елементу виконуватися не буде.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">TextValue</td>
+				<td>Object</td>
+				<td>
+					Тільки прив'язка (<a class="code-link" href="/xaml/bind/bind">Bind</a>). Текстова прив'язка. Якщо вона задана, то
+					при виборі елементу в переліку в неї буде передаватися текст, а не сам елемент.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Align</td>
+				<td><a class="code-link" href="/xaml/enums/textalign">TextAlign</a></td>
+				<td>Вирівнювання тексту.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Placeholder</td>
+				<td>String</td>
+				<td>
+					Підказка. Відображається в пустому полі введення. Зникає при отриманні полем фокуса введення.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Style</td>
+				<td class="fit"><code>SelectorStyle</code></td>
+				<td>
+					Стиль відображення селектору. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) звичайний селектор.</li>
+						<li>
+							<span class="prop-name">ComboBox</span> - селектор у вигляді комбінованого спадного переліку.
+							Фільтрація в цьому випадку не підтримується.
+						</li>
+						<li><span class="prop-name">Hyperlink</span> - селектор у вигляді гіперпосилання. Фільтрація в цьому випадку не підтримується.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">Size</td>
+				<td><code>ControlSize</code></td>
+				<td>
+					Розмір елементу. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">Default</span> - (за замовчуванням) селектор звичайного розміру.</li>
+						<li><span class="prop-name">Large</span> - збільшений розмір селектора.</li>
+					</ul>
+					(інші значення переліку <code>ControlSize</code> не підтримуються).
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ItemsSource</td>
+				<td>Array</td>
+				<td>
+					Завжди прив'язка - <a class="code-link" href="../bind/bind">Bind</a>. Джерело даних для відображення в переліку.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">DisplayProperty</td>
+				<td>String</td>
+				<td>
+					Ім'я властивості основного елементу, яке буде відображатися в селекторі.
+				</td>
+			</tr>
+			<tr class="top">
+				<td class="prop-name">PanelPlacement</td>
+				<td class="fit"><code>DropDownPlacement</code></td>
+				<td>
+					Напрямок "спадання" панелі вибору селектора. Можливі значення:
+					<ul class="enum-vals">
+						<li><span class="prop-name">BottomLeft</span> - (за замовчуванням) донизу з прив'язкою лівого краю.</li>
+						<li><span class="prop-name">BottomRight</span> - донизу з прив'язкою правого краю.</li>
+						<li><span class="prop-name">TopLeft</span> - верх з прив'язкою лівого краю.</li>
+						<li><span class="prop-name">TopRight</span> - вверх з прив'язкою правого краю.</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ListSize</td>
+				<td><a class="code" href="/xaml/simple/size">Size</a></td>
+				<td>
+					Розмір спадної панелі селектора.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ItemsPanel</td>
+				<td><a class="code" href="/xaml/abstract/UIElementBase">UIElementBase</a></td>
+				<td>
+					Опис спадної панелі. В поточній версії в якості спадної панелі підтримується
+					тільки елемент <a class="code" href="/xaml/controls/datagrid">DataGrid</a>.
+					Якщо елемент не вказано, використовується простий список елементів.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">NewPane</td>
+				<td><a class="code" href="/xaml/abstract/UIElementBase">UIElementBase</a></td>
+				<td>
+					Опис панелі створення нового елементу.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">CreateNewCommand</td>
+				<td><a class="code-link" href="/xaml/bind/bindcmd">BindCmd</a></td>
+				<td>Команда, яка буде виконана при створенні нового елементу.</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ShowCaret</td>
+				<td>Boolean?</td>
+				<td>
+					Показувати значок відкриття вмісту. Якщо стиль селектору <code>ComboBox</code>, то
+					значення автоматично встановлюєся в <code>True</code>.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">ShowClear</td>
+				<td>Boolean</td>
+				<td>
+					Показувати кнопку очистки вмісту. Натискання на цю кнопку викликає метод <code>$empty</code>
+					для зв'язаного елементу.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">FetchData</td>
+				<td>Object</td>
+				<td>
+					Додаткові дані для операції вибору.
+					Практично завжди прив'язка (<a class="code-link" href="bind">Bind</a>).
+					Властивості переданого об'єкта будуть використані в якості
+					параметрів для збереженої процедури пошуку елементів.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">MaxChars</td>
+				<td>Int32</td>
+				<td>
+					Максимальна кількість символів в тексті. Якщо у назві елементу більше символів, то текст
+					обрізається, і в кінець додаються три крапки.
+					Використовуються при заповленні панелі вибору за замовчуванням.
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">UseAll</td>
+				<td>Boolean</td>
+				<td>
+					Використовується в фільтрах, якшо значення по замовчуванню в фільтрі встановлюється по замовчуванню.
+					Якщо властивість дорівнює <b>True</b>, то при скиданні фільтру його Id буде встановлено в <b>-1</b>, а не в <b>null</b>.
+					<br />
+					Наприклад, перегляд задач по менеджерах. В процедурі значення фільтру "Менеджер" по замовчуванню встановлюється
+					як поточний користувач системи. Таким чином подивитись задачі всіх менеджерів буде неможливо.
+					<b>UseAll</b> дозволяє розділити значення "нічого не обрано", та "обрано всіх менеджерів".
+					<br />
+					Також, при встановленні <b>UseAll</b> також встановлюється <b>ShowClear="True".</b>
+				</td>
+			</tr>
+			<tr>
+				<td class="prop-name">Highlight</td>
+				<td>Boolean</td>
+				<td>
+					Візуально виділяти елемент, якщо його значення непорожнє. Корисно для фільтрів.
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<a href="/xaml/abstract/valuedcontrol">Властивості базового елементу</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>Опис</h3>
+	<p>
+		Селектор може працювати в двох режимах. Вибір з переліку і пошук в переліку/на сервері.
+	</p>
+	<p>
+		В першому просто емулюється комбінований список (<a class="code" href="combobox">ComboBox</a>)
+		с додатковими можливостями стилізації вікна вибору. У цьому випадку задається колекція для вибору (властивість <code>ItemsSource</code>) і
+		ім'я властивості зв'язаного елементу (властивість <code>DisplayProperty</code>), яке повинно відображатися в селекторе.
+	</p>
+	<p>
+		В другому випадку потрібно задати делегат (властивість <code>Delegate</code>), який буде періодично викликатися при введенні тексту в поле селектора.
+	</p>
+	<p>
+		Є можливість створення нового елементу у випадку, якщо в переліку нічого не знайдено.
+		Для цього потрібно задати панель створення елементу <code>NewPane</code> і команду <code>CreateNewCommand</code>.
+	</p>
+
+	<h3>Формат делегата пошуку (Delegate)</h3>
+	<div class="method">
+		<div class="syntax"><pre class="code-highlight js">fetch(this:IRoot, elem:IElement, text:string, all?: boolean): [] | Promise</pre></div>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>this</code> - корінь моделі даних.
+			</li>
+			<li>
+				<code>elem</code> - елемент, пов'язаний з селектором.
+			</li>
+			<li>
+				<code>text</code> - текст, набраний в полі введення.
+			</li>
+			<li>
+				<code>all</code> - ознака того, що потрібно виводити всі значення з переліку. Буде дорівнювати <code>true</code>, якщо
+				встановлено властивість <code>ShowCaret</code> і користувач відкриває вікно вибору кнопкою, а не введеням тексту в поле.
+			</li>
+		</ul>
+		<h4>Значення, що повертається:</h4>
+		<p>Делегат повинен повернути масив елементів або <code>Promise</code>, якщо елементи вибираються з сервера.</p>
+		<p>Те, що повернув делегат, буде показано в панелі вибору.</p>
+	</div>
+
+	<h3>Формат делегата встановленя (SetDelegate)</h3>
+	<div class="method">
+		<div class="syntax"><pre class="code-highlight js">fetch(this:IRoot, elem:IElement): void</pre></div>
+		<h4>Аргументи:</h4>
+		<ul class="params">
+			<li>
+				<code>this</code> - корінь моделі даних.
+			</li>
+			<li>
+				<code>elem</code> - (обраний в переліку) елемент, що встановлюється.
+			</li>
+		</ul>
+	</div>
+
+</div>
