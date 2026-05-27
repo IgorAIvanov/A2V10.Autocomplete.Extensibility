@@ -27,7 +27,7 @@ internal sealed class A2v10LanguageServerProvider : LanguageServerProvider
     [VisualStudioContribution]
     public static DocumentTypeConfiguration XamlDocumentType => new("a2v10-xaml")
     {
-        FileExtensions = [".vxaml", ".xaml", ".axaml"],
+        FileExtensions = [".vxaml", ".axaml", ".xaml"],
         BaseDocumentType = LanguageServerBaseDocumentType,
     };
 
